@@ -1,0 +1,57 @@
+/* Fonte Principal: Montserrat */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+/* Fonte Secundária (Tech/Números): Fira Code */
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
+
+/* Ícones: Material Symbols Rounded (Mais modernos e suaves) */
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+
+
+:root {
+  /* Fundo e Cards */
+  --bg-principal: #fffaf0; /* Primeira cor: Off-white/creme */
+  --bg-card: #ede8df;/* Segunda cor: Bege clarinho */
+
+  /* Amarelos */
+  --amarelo-claro: #F5F9B8; /* Amarelo base suave */
+  --amarelo-base: #E8E52F;  /* Amarelo vibrante */
+
+  /* Roxos */
+  --roxo-principal: #B892FF; /* Roxinho do meio (destaque) */
+  --roxo-base: #8F55DD;      /* Roxo da ponta (base/sombra) */
+
+  /* Status (Receitas e Despesas) */
+  --verde-receita: #8EC4B5;   /* Verde pastel */
+  --vermelho-despesa: #D25050; /* Vermelho/Coral */
+
+  /* Tipografia */
+  --texto-primario: #000
+  --texto-secundario: #2A2A2A;
+
+  /* Fontes */
+  --font-principal: 'Montserrat', sans-serif;
+  --font-tech: 'Fira Code', monospace;
+
+  /* Estilização Base */
+  --border-radius-card: 16px;
+  --sombra-suave: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-principal);
+  background-color: var(--bg-principal);
+  color: var(--texto-primario);
+  -webkit-font-smoothing: antialiased;
+}
+
+
+.font-tech {
+  font-family: var(--font-tech);
+}
