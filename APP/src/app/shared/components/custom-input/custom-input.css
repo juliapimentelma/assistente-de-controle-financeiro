@@ -1,0 +1,32 @@
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.5rem;
+}
+
+label {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: var(--texto-primario);
+  letter-spacing: -0.5px;
+}
+
+.numero {
+  font-weight: bold;
+  margin-right: 0.2rem;
+}
+
+.input-box {
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
+  background-color: var(--bg-principal); 
+  border: 1px solid var(--texto-primario);
+  border-radius: 12px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.input-box:focus {
+  border-color: var(--roxo-principal);
+  box-shadow: 0 0 0 3px rgba(184, 146, 255, 0.2);
+}
