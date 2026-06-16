@@ -1,0 +1,10 @@
+<div class="modal-overlay">
+  <div class="modal-card">
+    <h2 class="font-tech" [class.erro]="tipo === 'erro'">{{ titulo }}</h2>
+    <p>{{ mensagem }}</p>
+    
+    <button class="btn-acao font-tech" (click)="onFechar()">
+      entendido!
+    </button>
+  </div>
+</div>

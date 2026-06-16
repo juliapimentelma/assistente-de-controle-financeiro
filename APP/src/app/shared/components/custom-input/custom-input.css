@@ -4,11 +4,16 @@
   margin-bottom: 1.5rem;
 }
 
+.caixa-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
 label {
-  font-size: 1rem;
-  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  margin-bottom: 0.4rem;
   color: var(--texto-primario);
-  letter-spacing: -0.5px;
 }
 
 .numero {
@@ -17,16 +22,36 @@ label {
 }
 
 .input-box {
-  padding: 0.8rem 1.2rem;
-  font-size: 1rem;
-  background-color: var(--bg-principal); 
-  border: 1px solid var(--texto-primario);
-  border-radius: 12px;
+  width: 100%;
+  padding-right: 2.5rem;
+  padding: 0.6rem 1rem; 
+  font-size: 0.9rem;
+  background-color: rgba(255, 250, 240, 1); 
+  border: 1px solid rgba(0, 0, 0, 1);
+  border-radius: 8px;
   outline: none;
+  color: var(--texto-primario);
   transition: all 0.3s ease;
 }
 
 .input-box:focus {
   border-color: var(--roxo-principal);
-  box-shadow: 0 0 0 3px rgba(184, 146, 255, 0.2);
+}
+
+.btn-olho {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  color: var(--texto-primario);
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.btn-olho:hover {
+  opacity: 1;
+  color: var(--roxo-principal);
 }

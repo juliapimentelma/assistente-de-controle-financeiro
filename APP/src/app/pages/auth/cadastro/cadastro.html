@@ -1,0 +1,57 @@
+<main class="cadastro-wrapper">
+  
+  <div class="logo-container">
+    <img src="/assets/logo-coop-finances.svg" alt="Coop Finances Logo" class="logo">
+  </div>
+
+  <div class="cadastro-card">
+    <h2 class="font-tech titulo-cadastro">CADASTRO</h2>
+
+    <form [formGroup]="cadastroForm" (ngSubmit)="onSubmit()">
+      
+      <app-custom-input numero="01." label="nome completo:" tipo="text" [control]="cadastroForm.controls.nome"></app-custom-input>
+      <app-custom-input 
+        numero="02." 
+        label="e-mail:" 
+        tipo="email" 
+        [control]="cadastroForm.controls.email">
+      </app-custom-input>
+
+      @if (cadastroForm.controls.email.touched && cadastroForm.controls.email.errors?.['pattern']) {
+        <span class="erro-mensagem font-tech">E-mail inválido. Precisa ter @ e um domínio (ex: .com).</span>
+      }
+      <app-custom-input numero="03." label="senha forte:" tipo="password" [control]="cadastroForm.controls.senha"></app-custom-input>
+      
+      @if (cadastroForm.controls.senha.touched && cadastroForm.controls.senha.errors?.['pattern']) {
+        <span class="erro-mensagem font-tech">A senha precisa ter letras maiúsculas, minúsculas e números.</span>
+      }
+
+      <app-custom-input numero="04." label="confirmar senha:" tipo="password" [control]="cadastroForm.controls.confirmarSenha"></app-custom-input>
+
+      @if (cadastroForm.errors?.['senhasDiferentes'] && cadastroForm.controls.confirmarSenha.touched) {
+        <span class="erro-mensagem font-tech">As senhas não coincidem!</span>
+      }
+
+      <div class="input-wrapper">
+        <label class="font-tech"><span class="numero">05.</span> seu conselheiro:</label>
+        <select formControlName="tomIA" class="input-box font-tech">
+          <option value="CONSELHEIRO">Conselheiro (Gentil e Didático)</option>
+          <option value="SARGENTO">Sargento (Rígido e Direto)</option>
+        </select>
+      </div>
+
+      <a routerLink="/login" class="link-voltar font-tech">já tem uma conta? <span>faça login!</span></a>
+
+      <div class="actions">
+        <button type="submit" [disabled]="cadastroForm.invalid" class="btn-acao font-tech">
+          cadastrar!
+        </button>
+      </div>
+
+    </form>
+  </div>
+</main>
+
+@if (exibirModal) {
+  <app-custom-modal [titulo]="tituloModal" [mensagem]="mensagemModal" [tipo]="tipoModal" (fechar)="fecharModal()"></app-custom-modal>
+}

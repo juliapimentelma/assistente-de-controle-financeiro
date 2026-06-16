@@ -15,4 +15,18 @@ export class CustomInput {
   @Input() tipo: string = 'text';
   @Input() placeholder: string = '';
   @Input({ required: true }) control!: FormControl; 
+
+  mostrarSenha = false;
+
+  get inputType(): string {
+    if (this.tipo === 'password') {
+      return this.mostrarSenha ? 'text' : 'password';
+    }
+    return this.tipo;
+  }
+
+  toggleSenha(event: Event): void {
+    event.preventDefault();
+    this.mostrarSenha = !this.mostrarSenha;
+  }
 }

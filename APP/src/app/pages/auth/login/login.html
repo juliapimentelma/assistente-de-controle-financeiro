@@ -1,0 +1,49 @@
+<main class="login-wrapper">
+  <section class="apresentacao">
+    <div class="logo-container">
+      <img src="assets/logo-coop-finances.svg" alt="Coop Finances Logo" class="logo">
+    </div>
+
+    <h1 class="font-tech titulo-principal">
+      <span class="linha-1">seu copiloto</span>
+      <span class="destaque-amarelo">financeiro</span>
+    </h1>
+
+    <p>
+      Assuma o controle do <strong>seu dinheiro</strong> com uma <strong>Inteligência Artificial</strong> que te orienta (ou te dá broncas). <strong>Trace metas</strong>, não estoure seus limites e <strong>descubra o poder</strong> de cada escolha <strong>financeira</strong>.
+    </p>
+  </section>
+  <section class="formulario-container">
+    <div class="login-card">
+      <h2 class="font-tech titulo-login">LOGIN</h2>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        
+        <app-custom-input 
+          numero="01." 
+          label="e-mail:" 
+          tipo="email" 
+          [control]="loginForm.controls.email">
+        </app-custom-input>
+
+        <app-custom-input 
+          numero="02." 
+          label="senha:" 
+          tipo="password" 
+          [control]="loginForm.controls.senha">
+        </app-custom-input>
+
+        <a routerLink="/cadastro" class="link-cadastro font-tech">
+          ainda não tem login? <span>cadastre-se aqui!</span>
+        </a>
+
+        <div class="actions">
+          <button type="submit" [disabled]="loginForm.invalid" class="btn-entrar font-tech">
+            entrar!
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </section>
+</main>

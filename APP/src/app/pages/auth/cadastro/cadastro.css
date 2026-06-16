@@ -1,0 +1,157 @@
+.cadastro-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow: hidden; 
+  background-image: url('/assets/bg-login.png'); 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 2rem;
+  position: relative; 
+}
+
+.logo-container {
+  position: absolute;
+  top: 4rem;
+  left: 6rem;
+  margin: 0; 
+  z-index: 10;
+}
+
+.logo {
+  height: 40px;
+}
+
+.cadastro-card {
+  background-color: rgba(255, 250, 240, 0.6); 
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0,0,0, 1); 
+  border-radius: 24px;
+  width: 100%;
+  max-width: 700px;
+  padding: 2rem 2.5rem; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.titulo-cadastro {
+  text-align: center;
+  font-size: 2rem;
+  letter-spacing: 12px;
+  margin-bottom: 1.5rem;
+  font-weight: 400;
+}
+
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+label {
+  font-size: 0.85rem;
+  margin-bottom: 0.3rem;
+  color: var(--texto-primario);
+}
+
+.numero {
+  font-weight: bold;
+  margin-right: 0.2rem;
+}
+
+.input-box {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  background-color: rgba(255, 250, 240, 1); 
+  border: 1px solid rgba(0, 0, 0, 1);
+  border-radius: 8px;
+  outline: none;
+  color: var(--texto-primario);
+  transition: all 0.3s ease;
+}
+
+.input-box:focus {
+  border-color: var(--roxo-principal);
+}
+
+.link-voltar {
+  display: block;
+  text-align: left;
+  font-size: 0.75rem;
+  text-decoration: none;
+  color: var(--texto-primario);
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.link-voltar span {
+  color: var(--roxo-principal);
+}
+
+.link-voltar:hover span {
+  text-decoration: underline;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+}
+
+.btn-acao {
+  background-color: var(--amarelo-claro);
+  border: 1px solid rgba(0, 0, 0, 1);
+  border-radius: 30px;
+  padding: 0.8rem 3rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-acao:hover:not(:disabled) {
+  background-color: var(--roxo-principal);
+  transform: translateY(-2px);
+  box-shadow: 2px 2px 0px var(--texto-primario);
+}
+
+.btn-acao:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.erro-mensagem {
+  display: block;
+  color: #ff4d4d;
+  font-size: 0.75rem;
+  margin-top: -0.8rem;
+  margin-bottom: 0.8rem;
+  padding-left: 0.5rem;
+}
+
+@media (max-width: 1024px) {
+  .logo-container {
+    top: 2rem;
+    left: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cadastro-card {
+    padding: 1.5rem 1.2rem;
+    border-radius: 16px;
+  }
+  
+  .cadastro-wrapper {
+    overflow: auto;
+  }
+
+  .titulo-cadastro {
+    font-size: 1.8rem;
+    letter-spacing: 4px;
+    margin-bottom: 1rem;
+  }
+}
