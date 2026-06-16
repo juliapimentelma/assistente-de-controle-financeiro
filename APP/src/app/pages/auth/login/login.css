@@ -141,6 +141,22 @@
   cursor: not-allowed;
 }
 
+.erro-login {
+  display: block;
+  text-align: center;
+  color: var(--vermelho-despesa);
+  font-size: 0.85rem;
+  margin-top: -1rem;
+  margin-bottom: 1.5rem;
+  animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
 @media (max-width: 1024px) {
   .login-wrapper {
     grid-template-columns: 1fr;

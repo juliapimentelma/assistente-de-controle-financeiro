@@ -33,7 +33,11 @@ public class Transacao {
     private StatusTransacao status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "subcategoria_id", nullable = false)
+    @JoinColumn(name = "categoria_id", nullable = false)
+    private Categoria categoria;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subcategoria_id")
     private Subcategoria subcategoria;
 
     @ManyToOne(fetch = FetchType.LAZY)

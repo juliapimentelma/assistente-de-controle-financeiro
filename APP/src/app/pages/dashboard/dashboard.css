@@ -1,0 +1,55 @@
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); 
+  grid-auto-rows: minmax(180px, auto);
+  gap: 1.5rem;
+  padding: 2rem;
+}
+
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--texto-primario);
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 4px 4px 0px var(--texto-primario);
+}
+
+.card-saldo {
+  grid-column: span 2;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-rosca {
+  grid-row: span 2;
+}
+
+.bg-roxo-neon {
+  background-color: var(--roxo-principal);
+  color: var(--texto-primario);
+}
+
+.rosca-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.grafico-rosca {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  position: relative;
+}
+
+@media (max-width: 1024px) {
+  .bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .card-saldo, .card-rosca {
+    grid-column: span 2;
+    grid-row: span 1;
+  }
+}

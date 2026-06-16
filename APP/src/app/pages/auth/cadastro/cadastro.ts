@@ -1,10 +1,10 @@
 import { Component, inject } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { CustomInput } from '../../../shared/components/custom-input/custom-input';
+import { CustomInput } from '../../../shared/custom-input/custom-input';
 import { AuthService } from '../../../core/services/auth';
 import { HttpErrorResponse } from '@angular/common/http';
-import { CustomModal } from '../../../shared/components/custom-modal/custom-modal';
+import { CustomModal } from '../../../shared/custom-modal/custom-modal';
 
 @Component({
   selector: 'app-cadastro',

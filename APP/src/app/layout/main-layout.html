@@ -1,0 +1,66 @@
+<div class="layout-container">
+  
+  <header class="top-header">
+    <div class="logo-container">
+      <img src="/assets/logo-coop-finances.svg" alt="Coop Finances Logo" class="logo">
+    </div>
+
+    <div class="header-actions">
+      <button class="btn-icon">
+        <span class="material-symbols-rounded">settings</span>
+      </button>
+      
+      <button class="btn-icon" (click)="logout()">
+        <span class="material-symbols-rounded">logout</span>
+      </button>
+      
+      <div class="avatar font-tech">JP</div>
+    </div>
+  </header>
+
+  <nav class="navbar">
+    <ul class="nav-list font-tech">
+      <li>
+        <a routerLink="/dashboard" routerLinkActive="ativo" class="nav-item">
+          <span class="material-symbols-rounded">dashboard</span>
+          Dashboard
+        </a>
+      </li>
+      <li>
+        <a routerLink="/extrato" routerLinkActive="ativo" class="nav-item">
+          <span class="material-symbols-rounded">wallet</span>
+          Meu Extrato
+        </a>
+      </li>
+      <li>
+        <a routerLink="/orcamentos" routerLinkActive="ativo" class="nav-item">
+          <span class="material-symbols-rounded">money_range</span>
+          Orçamentos
+        </a>
+      </li>
+      <li>
+        <a routerLink="/metas" routerLinkActive="ativo" class="nav-item">
+          <span class="material-symbols-rounded">finance_mode</span>
+          Metas
+        </a>
+      </li>
+      <li>
+        <a routerLink="/simulacao" routerLinkActive="ativo" class="nav-item">
+          <span class="material-symbols-rounded">experiment</span>
+          Simulação
+        </a>
+      </li>
+      <li>
+        <a routerLink="/ia" routerLinkActive="ativo" class="nav-item destaque-ia">
+          <img src="/assets/sparkles.svg" alt="IA" class="icon-svg">
+          Posso comprar?
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+</div>

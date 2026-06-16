@@ -33,6 +33,10 @@
           [control]="loginForm.controls.senha">
         </app-custom-input>
 
+        @if (mensagemErro) {
+          <span class="erro-login font-tech">{{ mensagemErro }}</span>
+        }
+
         <a routerLink="/cadastro" class="link-cadastro font-tech">
           ainda não tem login? <span>cadastre-se aqui!</span>
         </a>

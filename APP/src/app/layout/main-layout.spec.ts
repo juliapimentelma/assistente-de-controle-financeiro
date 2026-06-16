@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CustomCard } from './custom-card';
+import { MainLayout } from './main-layout';
 
-describe('CustomCard', () => {
-  let component: CustomCard;
-  let fixture: ComponentFixture<CustomCard>;
+describe('MainLayout', () => {
+  let component: MainLayout;
+  let fixture: ComponentFixture<MainLayout>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CustomCard],
+      imports: [MainLayout],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CustomCard);
+    fixture = TestBed.createComponent(MainLayout);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

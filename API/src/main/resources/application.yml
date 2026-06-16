@@ -2,14 +2,14 @@ spring:
   application:
     name: ConselheiroFinanceiroAPI
 
-  # CONFIGURAÇÃO DO BANCO DE DADOS (POSTGRESQL)
+  # CONFIGURACAO DO BANCO DE DADOS (POSTGRESQL)
   datasource:
     url: jdbc:postgresql://localhost:5432/conselheiro_db
     username: postgres
     password: admin
     driver-class-name: org.postgresql.Driver
 
-  # CONFIGURAÇÃO DO JPA / HIBERNATE
+  # CONFIGURACAO DO JPA / HIBERNATE
   jpa:
     hibernate:
       ddl-auto: validate
@@ -19,18 +19,18 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-  # CONFIGURAÇÃO DO FLYWAY (MIGRATIONS)
+  # CONFIGURACAO DO FLYWAY (MIGRATIONS)
   flyway:
     enabled: true
     baseline-on-migrate: true
     locations: classpath:db/migration
 
-  # CONFIGURAÇÃO DO SPRING AI (OPENAI)
+  # CONFIGURACAO DO SPRING AI (OPENAI)
   ai:
     openai:
       api-key: ${OPENAI_API_KEY}
 
-# CONFIGURAÇÃO DE SEGURANÇA (JWT RSA)
+# CONFIGURACAO DE SEGURANCA (JWT RSA)
 jwt:
   public:
     key: classpath:authz.pub
