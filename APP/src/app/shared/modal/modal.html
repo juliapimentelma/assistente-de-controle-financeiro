@@ -1,0 +1,18 @@
+<div class="modal-backdrop" (click)="fecharModal()">
+  
+  <div class="modal-box" [style.max-width]="maxWidth" (click)="prevenirFechamento($event)">
+    
+    <div class="modal-header">
+      <h2 class="font-montserrat">{{ titulo }}</h2>
+      
+      <button class="btn-fechar" (click)="fecharModal()">
+        <span class="material-symbols-rounded">close</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <ng-content></ng-content>
+    </div>
+
+  </div>
+</div>

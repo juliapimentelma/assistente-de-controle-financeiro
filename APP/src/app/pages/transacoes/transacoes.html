@@ -1,0 +1,184 @@
+<div class="extrato-container">
+  
+  <div class="extrato-header">
+    <h1 class="titulo-page">Meu Extrato</h1>
+    
+    <div class="header-acoes">
+      <button class="btn-criar" (click)="abrirModal()">
+        <span class="material-symbols-rounded">add</span>
+        Criar Transação
+      </button>
+      
+      <button class="btn-exportar" (click)="exportarPdf()">
+        Exportar PDF
+      </button>
+    </div>
+  </div>
+
+  <div class="filtros-bar">
+    <div class="input-search-wrapper">
+      <input type="text" placeholder="Pesquisar" class="input-search" [value]="filtroBusca()" (input)="atualizarBusca($event)">
+      <span class="material-symbols-rounded icon-search">search</span>
+    </div>
+
+    <div class="filtros-datas">
+      <label>
+        Data Inicial:
+        <input type="date" class="input-date" [value]="filtroDataInicio()" (input)="atualizarDataInicio($event)">
+      </label>
+      <label>
+        Data Final:
+        <input type="date" class="input-date" [value]="filtroDataFim()" (input)="atualizarDataFim($event)">
+      </label>
+    </div>
+  </div>
+
+  <div class="tabela-container">
+    <table class="tabela-extrato">
+      <thead>
+        <tr>
+          <th>Descrição</th>
+          <th>Tipo</th>
+          <th>Categoria</th>
+          <th>Data</th>
+          <th>Status</th>
+          <th>Valor</th>
+          <th>Editar</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (t of transacoesFiltradas(); track t.id) {
+          
+          <tr [class.linha-expandida]="transacoesExpandidas().has(t.id)">
+            <td class="col-descricao">
+              @if (t.parcelas && t.parcelas.length > 0) {
+                <span class="material-symbols-rounded icon-expand" 
+                      (click)="toggleExpandir(t.id)"
+                      [style.transform]="transacoesExpandidas().has(t.id) ? 'rotate(180deg)' : 'none'">
+                  arrow_drop_down
+                </span>
+              } @else {
+                <span class="espacador-icone"></span>
+              }
+              
+              {{ t.descricao }}
+            </td>
+            <td [ngClass]="t.tipo === 'DESPESA' ? 'text-despesa' : 'text-receita'">
+              {{ t.tipo | titlecase }}
+            </td>
+            <td>{{ t.nomeCategoriaMaior }} - {{ t.nomeSubcategoria }}</td>
+            <td>{{ t.dataVencimento | date:'dd/MM/yyyy' }}</td>
+            <td>{{ t.status | titlecase }}</td>
+            <td [ngClass]="t.tipo === 'DESPESA' ? 'text-despesa' : 'text-receita'">
+              {{ t.valor | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
+            </td>
+            <td class="col-acoes">
+              <button class="btn-icon text-despesa" (click)="pedirExclusao(t)" title="Excluir">
+                <span class="material-symbols-rounded">delete</span>
+              </button>
+              <button class="btn-icon text-edit" (click)="abrirModal(t)" title="Editar">
+                <span class="material-symbols-rounded">edit</span>
+              </button>
+            </td>
+          </tr>
+
+          @if (t.parcelas && t.parcelas.length > 0 && transacoesExpandidas().has(t.id)) {
+            @for (p of t.parcelas; track p.id) {
+              <tr class="linha-parcela">
+                <td class="col-descricao-parcela">
+                  {{ p.numero }}/{{ t.parcelas.length }}
+                </td>
+                <td></td> <td></td>
+                <td class="texto-menor">{{ p.data | date:'dd/MM/yyyy' }}</td>
+                <td></td>
+                <td [ngClass]="t.tipo === 'DESPESA' ? 'text-despesa' : 'text-receita'" class="texto-menor">
+                  {{ p.valor | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
+                </td>
+                <td></td>
+              </tr>
+            }
+          }
+
+        } @empty {
+          <tr>
+            <td colspan="7" class="vazio">Nenhuma transação encontrada no período.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+@if (modalAberto()) {
+  <app-modal 
+    [titulo]="transacaoEditando() ? 'Editar Transação' : 'Nova Transação'" 
+    (fechar)="fecharModal()">
+    
+    <form [formGroup]="transacaoForm" (ngSubmit)="salvarTransacao()" class="form-transacao">
+      
+      <div class="form-group">
+        <label>Descrição</label>
+        <input type="text" formControlName="descricao" placeholder="Ex: Conta de Luz ou Salário">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Tipo</label>
+          <select formControlName="tipo">
+            <option value="DESPESA">Despesa</option>
+            <option value="RECEITA">Receita</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Valor (R$)</label>
+          <input type="text" formControlName="valorTexto" placeholder="0,00" (input)="aplicarMascaraMoeda($event)">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Categoria</label>
+          <select formControlName="categoriaId" (change)="mudarCategoria($event)">
+            <option value="" disabled selected>Selecione...</option>
+            @for (cat of categorias(); track cat.id) {
+              <option [value]="cat.id">{{ cat.nome }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Subcategoria</label>
+          <input type="text" formControlName="nomeSubcategoria" placeholder="Ex: Uber, iFood, Luz...">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Data de Vencimento</label>
+          <input type="date" formControlName="dataVencimento">
+        </div>
+
+        <div class="form-group">
+          <label>Nº Parcelas</label>
+          <input type="number" formControlName="qtdParcelas" min="1" placeholder="1">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Status</label>
+        <select formControlName="status">
+          <option value="PENDENTE">Pendente</option>
+          <option value="PAGO">Pago</option>
+        </select>
+      </div>
+
+      <div class="form-acoes">
+        <button type="button" class="btn-cancelar" (click)="fecharModal()">Cancelar</button>
+        <button type="submit" class="btn-salvar" [disabled]="transacaoForm.invalid">Salvar</button>
+      </div>
+
+    </form>
+    
+  </app-modal>
+}

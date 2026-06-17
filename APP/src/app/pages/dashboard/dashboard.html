@@ -4,38 +4,53 @@
   <div class="bento-grid">
     
     <div class="card bg-roxo-neon card-saldo">
-      <div class="balanco-info">
-        <h3>Balanço Total</h3>
-        <h2 class="font-tech">{{ dash.saldoAtual | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</h2>
+      
+      <div class="saldo-esquerda">
+        <h3 class="font-montserrat">Balanço Total</h3>
+        <h2 class="font-tech valor-saldo">{{ dash.saldoAtual | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</h2>
       </div>
-      <div class="grafico-barras">
-        <div class="barra" style="height: 30%"></div>
-        <div class="barra" style="height: 50%"></div>
-        <div class="barra" style="height: 40%"></div>
-        <div class="barra destaque" style="height: 80%"></div>
-        <div class="barra" style="height: 60%"></div>
+
+      <div class="divisor-vertical"></div>
+
+      <div class="saldo-direita">
+        <div class="grafico-barras">
+          <div class="barra barra-roxa" style="height: 20%"></div>
+          <div class="barra barra-roxa" style="height: 40%"></div>
+          <div class="barra barra-roxa" style="height: 60%"></div>
+          <div class="barra barra-preta" style="height: 65%"></div>
+          <div class="barra barra-preta" style="height: 50%"></div>
+          <div class="barra barra-preta" style="height: 80%"></div>
+          <div class="barra barra-preta" style="height: 55%"></div>
+          <div class="barra barra-preta" style="height: 100%"></div>
+        </div>
       </div>
+
     </div>
 
     <div class="card card-metas">
       <h3>Como estão minhas metas?</h3>
+      
       <div class="barra-progresso-container">
         <div class="barra-fundo">
-          <div class="barra-preenchimento bg-verde-limao" [style.width.%]="dash.progressoMeta"></div>
+          <div class="barra-preenchimento" [style.width.%]="dash.progressoMeta"></div>
         </div>
+        
         <div class="labels-progresso font-tech">
-          <span>0%</span>
-          <span>{{ dash.progressoMeta }}%</span>
+          <span>0</span>
+          <span class="label-atual" [style.left.%]="dash.progressoMeta">{{ dash.progressoMeta }}%</span>
           <span>100%</span>
         </div>
       </div>
     </div>
 
     <div class="card card-ia">
-      <h3>Tô podendo ainda?</h3>
-      <h2 class="font-tech msg-ia">Você ainda pode gastar {{ dash.valorDisponivelMes | currency:'BRL':'symbol':'1.2-2':'pt-BR' }} este mês</h2>
-      <p>Não abuse da sorte...</p>
-    </div>
+          <h3>Tô podendo ainda?</h3>
+          <h2 class="font-tech msg-ia">
+            Você ainda pode gastar <br> 
+            {{ dash.valorDisponivelMes | currency:'BRL':'symbol':'1.2-2':'pt-BR' }} este mês
+          </h2>
+          <p class="font-tech">Não abuse da sorte...</p>
+      </div>
 
     <div class="card card-rosca">
       <h3>Distribuição de categorias (Despesas)</h3>
@@ -57,13 +72,47 @@
     </div>
 
     <div class="card card-extrato">
-      <div class="extrato-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-        <h3>Resumo do Extrato</h3>
-        <button style="background: var(--amarelo-base); border: none; padding: 5px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; color: var(--bg-principal);">Exportar PDF</button>
+      <div class="extrato-header">
+        <h3 class="font-montserrat">Resumo do Extrato</h3>
       </div>
       
-      <div class="extrato-conteudo" style="flex-grow: 1; display: flex; align-items: center; justify-content: center; border: 1px dashed var(--texto-primario); border-radius: 8px; opacity: 0.5;">
-         <p class="font-tech">A tabela de transações vai entrar aqui...</p>
+      <div class="extrato-conteudo">
+        <table class="tabela-extrato font-tech">
+          <thead>
+            <tr>
+              <th>Descrição</th>
+              <th>Tipo</th>
+              <th>Categoria</th>
+              <th>Data</th>
+              <th>Status</th>
+              <th>Valor</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (transacao of dash.ultimasTransacoes; track $index) {
+              <tr>
+                <td>{{ transacao.descricao }}</td>
+                <td [ngClass]="transacao.tipo === 'DESPESA' ? 'text-despesa' : 'text-receita'">
+                  {{ transacao.tipo | titlecase }}
+                </td>
+                <td>{{ transacao.categoria }}</td>
+                <td>{{ transacao.data | date:'dd/MM/yyyy' }}</td>
+                <td>{{ transacao.status | titlecase }}</td>
+                <td [ngClass]="transacao.tipo === 'DESPESA' ? 'text-despesa' : 'text-receita'">
+                  {{ transacao.valor | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="text-center">Nenhuma transação recente encontrada.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        <div class="extrato-footer">
+          <button class="btn-ver-mais" routerLink="/extrato"> Ver mais... </button>
+        </div>
       </div>
     </div>
 

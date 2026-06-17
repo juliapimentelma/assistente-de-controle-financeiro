@@ -5,6 +5,7 @@ import { Dashboard } from './pages/dashboard/dashboard';
 import { authGuard } from './core/guards/auth-guard';
 import { MainLayout } from './layout/main-layout';
 import { Metas } from './pages/metas/metas';
+import { Transacoes } from './pages/transacoes/transacoes';
 
 export const routes: Routes = [
   { 
@@ -23,8 +24,11 @@ export const routes: Routes = [
       { path: 'dashboard', component: Dashboard },
       { path: 'metas', component: Metas},
       
-      // ROTAS FUTURAS (Vamos descomentando conforme formos criando)
-      // { path: 'extrato', component: ExtratoComponent },
+      { 
+      path: 'extrato', 
+      title: 'Meu Extrato',
+      component: Transacoes 
+      },
       // { path: 'orcamentos', component: OrcamentosComponent },
       // { path: 'metas', component: MetasComponent },
       // { path: 'simulacao', component: SimulacaoComponent },

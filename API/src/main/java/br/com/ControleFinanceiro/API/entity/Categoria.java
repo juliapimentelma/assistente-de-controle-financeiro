@@ -17,17 +17,17 @@ public class Categoria {
 
     private String nome;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "categoria_pai_id")
-    private Categoria categoriaPai;
-
-    @OneToMany(mappedBy = "categoriaPai", cascade = CascadeType.ALL)
-    private List<Categoria> subcategorias;
-
     @Enumerated(EnumType.STRING)
     private TipoCategoria tipo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "categoria_pai_id")
+    private Categoria categoriaPai;
+
+    @OneToMany(mappedBy = "categoriaPai", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Categoria> subcategorias = new ArrayList<>();
 }

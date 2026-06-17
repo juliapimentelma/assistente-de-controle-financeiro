@@ -26,7 +26,7 @@
   --vermelho-despesa: #D25050; /* Vermelho/Coral */
 
   /* Tipografia */
-  --texto-primario: #000
+  --texto-primario: #000;
   --texto-secundario: #2A2A2A;
 
   /* Fontes */
@@ -34,7 +34,7 @@
   --font-tech: 'Fira Code', monospace;
 
   /* Estilização Base */
-  --border-radius-card: 16px;
+  --border-radius-card: 15px;
   --sombra-suave: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
@@ -42,6 +42,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Montserrat', sans-serif;
 }
 
 body {

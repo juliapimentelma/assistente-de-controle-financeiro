@@ -10,11 +10,12 @@ import br.com.ControleFinanceiro.API.mapper.CategoriaMapper;
 import br.com.ControleFinanceiro.API.repository.CategoriaRepository;
 import br.com.ControleFinanceiro.API.repository.SubcategoriaRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,11 +29,25 @@ public class CategoriaService {
     private final CategoriaMapper categoriaMapper;
 
 
+    // O Transactional é obrigatório para o Java conseguir ler a lista (Lazy Loading) sem dar erro!
+    @Transactional(readOnly = true)
     public List<CategoriaResponse> listarCategoriasDoUsuario() {
         Long usuarioId = getUsuarioLogadoId();
 
-        return categoriaRepository.findAllByUsuarioId(usuarioId).stream()
-                .map(categoriaMapper::toResponseDTO)
+        // 1. Busca apenas as categorias pai (categoria_pai_id IS NULL)
+        return categoriaRepository.findAllByUsuarioIdAndCategoriaPaiIsNull(usuarioId).stream()
+                .map(categoria -> new CategoriaResponse(
+                        categoria.getId(),
+                        categoria.getNome(),
+                        // 2. Transforma as categorias filhas em SubcategoriaResponse para o Angular ler
+                        categoria.getSubcategorias().stream()
+                                .map(sub -> new SubcategoriaResponse(
+                                        sub.getId(),
+                                        sub.getNome(),
+                                        categoria.getId() // ID do pai
+                                ))
+                                .toList()
+                ))
                 .toList();
     }
 
@@ -72,8 +87,13 @@ public class CategoriaService {
                 .map(c -> new CategoriaResponse(
                         c.getId(),
                         c.getNome(),
+                        // AQUI ESTAVA O ERRO: Precisamos criar um SubcategoriaResponse, e não CategoriaResponse!
                         c.getSubcategorias().stream()
-                                .map(sub -> new CategoriaResponse(sub.getId(), sub.getNome(), null))
+                                .map(sub -> new SubcategoriaResponse(
+                                        sub.getId(),
+                                        sub.getNome(),
+                                        c.getId()
+                                ))
                                 .collect(Collectors.toList())
                 ))
                 .collect(Collectors.toList());

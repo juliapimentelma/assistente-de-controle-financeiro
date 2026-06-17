@@ -39,12 +39,12 @@ public interface TransacaoRepository extends JpaRepository<Transacao, Long> {
     @Query("SELECT c.nome as nome, SUM(t.valor) as total FROM Transacao t JOIN t.categoria c WHERE t.usuario.id = :usuarioId AND t.mesCompetencia = :mes AND t.anoCompetencia = :ano AND c.tipo = 'DESPESA' GROUP BY c.nome")
     List<CategoriaSomaProjection> somarDespesasAgrupadasPorCategoria(@Param("usuarioId") Long usuarioId, @Param("mes") int mes, @Param("ano") int ano);
 
-    @Query("SELECT new br.com.ControleFinanceiro.API.dto.response.CategoriaSomaDTO(t.categoria.nome, SUM(t.valor)) " +
+    @Query("SELECT new br.com.ControleFinanceiro.API.dto.CategoriaSomaDTO(t.categoria.nome, SUM(t.valor)) " +
             "FROM Transacao t " +
             "WHERE t.usuario.id = :usuarioId " +
-            "AND t.tipo = 'DESPESA' " + // Ajuste para o nome do seu Enum
-            "AND MONTH(t.data) = :mes " +
-            "AND YEAR(t.data) = :ano " +
+            "AND t.categoria.tipo = 'DESPESA' " +
+            "AND t.mesCompetencia = :mes " +
+            "AND t.anoCompetencia = :ano " +
             "GROUP BY t.categoria.nome")
     List<CategoriaSomaDTO> somarDespesasPorCategoria(
             @Param("usuarioId") Long usuarioId,

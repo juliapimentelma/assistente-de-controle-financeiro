@@ -7,5 +7,9 @@ import java.util.List;
 public record CategoriaResponse(
         Long id,
         String nome,
-        List<CategoriaResponse> subcategorias
+        // Pode descomentar esses campos abaixo se eles existirem na sua entidade Categoria!
+        // TipoCategoria tipo,
+        // String corHex,
+        // String icone,
+        List<SubcategoriaResponse> subcategorias
 ) {}

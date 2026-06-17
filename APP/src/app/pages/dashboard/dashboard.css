@@ -9,20 +9,271 @@
 
 .card {
   background-color: var(--bg-card);
-  border: 1px solid var(--texto-primario);
+  border: none;
   border-radius: 15px;
   padding: 1.5rem;
-  box-shadow: 4px 4px 0px var(--texto-primario);
+  box-shadow: none; 
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
-.card-saldo   { grid-column: 1 / 2; grid-row: 1 / 2; }
-.card-metas   { grid-column: 2 / 3; grid-row: 1 / 2; }
-.card-ia      { grid-column: 3 / 4; grid-row: 1 / 2; }
-.card-rosca   { grid-column: 1 / 2; grid-row: 2 / 3; }
-.card-extrato { grid-column: 2 / 4; grid-row: 2 / 3; }
+.card-saldo {
+  grid-column: 1 / 2; 
+  grid-row: 1 / 2;
+  flex-direction: row;
+  padding: 1.5rem 2rem;
+  color: var(--texto-primario)
+}
+
+.saldo-esquerda {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1; 
+}
+
+.saldo-esquerda h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  font-size: 1.2rem;
+  color: var(--texto-primario);
+  margin: 0;
+}
+
+.valor-saldo {
+  font-size: 2.2rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.divisor-vertical {
+  width: 1px;
+  background-color: rgba(0, 0, 0, 0.3); 
+  margin: 0 1.5rem;
+  height: 100%;
+}
+
+.saldo-direita {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+}
+
+.grafico-barras {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 100px;
+  width: 100%;
+}
+
+.barra {
+  flex: 1;
+  max-width: 18px;
+  border-radius: 20px;
+}
+
+.barra-roxa {
+  background-color: var(--roxo-base);
+}
+
+.barra-preta {
+  background-color: var(--texto-primario);
+}
+
+.card-metas {
+  color: var(--texto-primario);
+  display: flex;
+  flex-direction: column;
+}
+
+.card-metas h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  color: var(--texto-primario);
+}
+
+.barra-progresso-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1; 
+  padding-bottom: 1rem;
+}
+
+.barra-fundo {
+  width: 100%;
+  height: 38px; 
+  background-color: var(--amarelo-claro);
+  border-radius: 30px;
+  position: relative;
+}
+
+.barra-preenchimento {
+  height: 100%;
+  background-color: var(--amarelo-base);
+  border-radius: 30px;
+  transition: width 1s ease-in-out;
+}
+
+.labels-progresso {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  margin-top: 12px;
+  font-size: 1.1rem;
+  color: var(--texto-primario);
+}
+
+.label-atual {
+  position: absolute;
+  transform: translateX(-50%);
+  top: 0;
+}
+
+.card-ia { 
+  grid-column: 3 / 4; 
+  grid-row: 1 / 2; 
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; 
+  color: var(--texto-primario);
+}
+
+.card-ia h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  font-size: 1.2rem;
+  margin: 0;
+  color: var(--texto-primario);
+}
+
+.card-ia .msg-ia {
+  font-size: 1.8rem;
+  font-weight: 400;
+  line-height: 1.2;
+  margin: 0;
+  color: var(--texto-primario);
+}
+
+.card-ia p {
+  font-size: 1.1rem;
+  margin: 0;
+  color: var(--texto-primario);
+}
+
+
+.card-extrato {
+  grid-column: 2 / 4;
+  grid-row: 2 / 3;
+  display: flex;
+  flex-direction: column;
+  color: var(--texto-primario);
+}
+
+.extrato-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.extrato-header h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  font-size: 1.2rem;
+  margin: 0;
+  color: var(--texto-primario);
+}
+
+.btn-exportar:hover {
+  transform: scale(1.05);
+}
+
+.extrato-conteudo {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.tabela-extrato {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  font-size: 0.9rem;
+  font-family: var(--font-principal);
+}
+
+.tabela-extrato th {
+  font-weight: 400;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--texto-primario); 
+}
+
+.tabela-extrato td {
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.tabela-extrato th:first-child,
+.tabela-extrato td:first-child {
+  text-align: left;
+}
+
+.text-despesa {
+  color: var(--vermelho-despesa); 
+}
+
+.text-receita {
+  color: var(--verde-receita);
+}
+
+.text-center {
+  text-align: center;
+  opacity: 0.6;
+  padding: 2rem;
+}
+
+.extrato-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.btn-ver-mais {
+  background-color: #000000;
+  color: #ffffff;
+  border: none;
+  padding: 6px 20px;
+  border-radius: 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-ver-mais:hover {
+  background-color: var(--roxo-principal);
+}
+
+.card-rosca h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300; /* Fonte fininha */
+  font-size: 1.2rem;
+  margin: 0 0 1rem 0;
+  color: var(--texto-primario);
+}
+
+.card-rosca { 
+  grid-column: 1 / 2; 
+  grid-row: 2 / 3; 
+  display: flex; 
+  flex-direction: column;
+}
 
 .bg-roxo-neon {
   background-color: var(--roxo-principal);

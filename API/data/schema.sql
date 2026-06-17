@@ -2,7 +2,6 @@
 DROP TABLE IF EXISTS tb_meta_projeto CASCADE;
 DROP TABLE IF EXISTS tb_transacao CASCADE;
 DROP TABLE IF EXISTS tb_orcamento CASCADE;
-DROP TABLE IF EXISTS tb_subcategoria CASCADE;
 DROP TABLE IF EXISTS tb_categoria CASCADE;
 DROP TABLE IF EXISTS tb_usuario CASCADE;
 
@@ -23,26 +22,17 @@ CREATE TABLE tb_usuario (
 );
 
 -- ============================================================
--- TABELA: CATEGORIA (O "Grupo Maior" - ex: Moradia, Alimentação)
+-- TABELA: CATEGORIA (O "Grupo Maior" e as "Subcategorias")
 -- ============================================================
 CREATE TABLE tb_categoria (
     id BIGSERIAL PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     tipo VARCHAR(20) NOT NULL, -- RECEITA, DESPESA ou INVESTIMENTO
     usuario_id BIGINT NOT NULL,
+    categoria_pai_id BIGINT NULL, -- NOVO: Se for nulo, é Categoria Pai. Se tiver número, é Subcategoria!
     CONSTRAINT fk_categoria_usuario FOREIGN KEY (usuario_id) REFERENCES tb_usuario(id) ON DELETE CASCADE,
-    CONSTRAINT uq_categoria_usuario_nome UNIQUE (usuario_id, nome)
-);
-
--- ============================================================
--- TABELA: SUBCATEGORIA (O detalhe opcional - ex: Luz, iFood)
--- ============================================================
-CREATE TABLE tb_subcategoria (
-    id BIGSERIAL PRIMARY KEY,
-    nome VARCHAR(255) NOT NULL,
-    categoria_id BIGINT NOT NULL,
-    CONSTRAINT fk_subcategoria_categoria FOREIGN KEY (categoria_id) REFERENCES tb_categoria(id) ON DELETE CASCADE,
-    CONSTRAINT uq_subcategoria_categoria_nome UNIQUE (categoria_id, nome)
+    CONSTRAINT fk_categoria_pai FOREIGN KEY (categoria_pai_id) REFERENCES tb_categoria(id) ON DELETE CASCADE,
+    CONSTRAINT uq_categoria_usuario_nome UNIQUE (usuario_id, nome, categoria_pai_id)
 );
 
 -- ============================================================
@@ -54,8 +44,10 @@ CREATE TABLE tb_orcamento (
     ano INT NOT NULL,
     valor_planejado NUMERIC(15,2) NOT NULL DEFAULT 0.00,
     categoria_id BIGINT NOT NULL,
+    subcategoria_id BIGINT NULL, -- Aponta para tb_categoria (onde estão as subcategorias)
     usuario_id BIGINT NOT NULL,
     CONSTRAINT fk_orcamento_categoria FOREIGN KEY (categoria_id) REFERENCES tb_categoria(id) ON DELETE CASCADE,
+    CONSTRAINT fk_orcamento_subcategoria FOREIGN KEY (subcategoria_id) REFERENCES tb_categoria(id) ON DELETE CASCADE,
     CONSTRAINT fk_orcamento_usuario FOREIGN KEY (usuario_id) REFERENCES tb_usuario(id) ON DELETE CASCADE,
     CONSTRAINT uq_orcamento_mes_ano UNIQUE (categoria_id, mes, ano)
 );
@@ -72,11 +64,11 @@ CREATE TABLE tb_transacao (
     mes_competencia INT NOT NULL CHECK (mes_competencia >= 1 AND mes_competencia <= 12),
     ano_competencia INT NOT NULL,
     status VARCHAR(20) NOT NULL DEFAULT 'PENDENTE',
-    categoria_id BIGINT NOT NULL,   -- NOVO: Obrigatório agrupar na categoria pai
-    subcategoria_id BIGINT NULL,    -- ALTERADO: Agora é opcional!
+    categoria_id BIGINT NOT NULL,
+    subcategoria_id BIGINT NULL,  -- Aponta para tb_categoria (onde estão as subcategorias)
     usuario_id BIGINT NOT NULL,
     CONSTRAINT fk_transacao_categoria FOREIGN KEY (categoria_id) REFERENCES tb_categoria(id) ON DELETE RESTRICT,
-    CONSTRAINT fk_transacao_subcategoria FOREIGN KEY (subcategoria_id) REFERENCES tb_subcategoria(id) ON DELETE SET NULL,
+    CONSTRAINT fk_transacao_subcategoria FOREIGN KEY (subcategoria_id) REFERENCES tb_categoria(id) ON DELETE SET NULL,
     CONSTRAINT fk_transacao_usuario FOREIGN KEY (usuario_id) REFERENCES tb_usuario(id) ON DELETE CASCADE
 );
 
@@ -98,26 +90,8 @@ CREATE TABLE tb_meta_projeto (
 -- ============================================================
 CREATE INDEX idx_usuario_email ON tb_usuario (email);
 CREATE INDEX idx_categoria_usuario ON tb_categoria (usuario_id);
-CREATE INDEX idx_subcategoria_categoria ON tb_subcategoria (categoria_id);
+CREATE INDEX idx_categoria_pai ON tb_categoria (categoria_pai_id);
 CREATE INDEX idx_orcamento_usuario ON tb_orcamento (usuario_id, mes, ano);
 CREATE INDEX idx_transacao_usuario_competencia ON tb_transacao (usuario_id, ano_competencia, mes_competencia);
 CREATE INDEX idx_transacao_categoria ON tb_transacao (categoria_id);
 CREATE INDEX idx_meta_usuario ON tb_meta_projeto (usuario_id);
-
-
--- 1. Adiciona a coluna que define a hierarquia
-ALTER TABLE tb_categoria
-ADD COLUMN categoria_pai_id BIGINT;
-
--- 2. Cria a relação de chave estrangeira (auto-relacionamento)
-ALTER TABLE tb_categoria
-ADD CONSTRAINT fk_categoria_pai
-FOREIGN KEY (categoria_pai_id) REFERENCES tb_categoria(id);
-
--- 3. (Opcional) Se você quiser que o orçamento também suporte subcategorias:
-ALTER TABLE tb_orcamento
-ADD COLUMN subcategoria_id BIGINT;
-
-ALTER TABLE tb_orcamento
-ADD CONSTRAINT fk_subcategoria
-FOREIGN KEY (subcategoria_id) REFERENCES tb_categoria(id);
