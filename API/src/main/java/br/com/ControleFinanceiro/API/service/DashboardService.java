@@ -1,8 +1,6 @@
 package br.com.ControleFinanceiro.API.service;
 
-import br.com.ControleFinanceiro.API.dto.CategoriaResumo;
-import br.com.ControleFinanceiro.API.dto.CategoriaSomaProjection;
-import br.com.ControleFinanceiro.API.dto.TransacaoResumo;
+import br.com.ControleFinanceiro.API.dto.*;
 import br.com.ControleFinanceiro.API.dto.response.DashboardResponse;
 import br.com.ControleFinanceiro.API.entity.Transacao;
 import br.com.ControleFinanceiro.API.entity.Usuario;
@@ -17,6 +15,8 @@ import br.com.ControleFinanceiro.API.entity.MetaProjeto;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,6 +28,7 @@ public class DashboardService {
     private final TransacaoRepository transacaoRepository;
     private final OrcamentoRepository orcamentoRepository;
     private final MetaProjetoRepository metaProjetoRepository;
+
 
     public DashboardService(UsuarioRepository usuarioRepository,
                             TransacaoRepository transacaoRepository,
@@ -94,5 +95,33 @@ public class DashboardService {
                 categoriasDespesa,
                 ultimasTransacoes
         );
+    }
+
+    public List<CategoriaDespesaDTO> calcularCategoriasDespesa(Long usuarioId, int mes, int ano) {
+
+        List<CategoriaSomaDTO> somas = transacaoRepository.somarDespesasPorCategoria(usuarioId, mes, ano);
+
+        if (somas.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        BigDecimal totalGasto = somas.stream()
+                .map(CategoriaSomaDTO::somaValor)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return somas.stream()
+                .map(soma -> {
+                    BigDecimal porcentagem = soma.somaValor()
+                            .divide(totalGasto, 4, RoundingMode.HALF_UP)
+                            .multiply(new BigDecimal("100"))
+                            .setScale(1, RoundingMode.HALF_UP);
+
+                    return new CategoriaDespesaDTO(
+                            soma.nomeCategoria(),
+                            porcentagem.doubleValue()
+                    );
+                })
+                .sorted(Comparator.comparing(CategoriaDespesaDTO::porcentagem).reversed())
+                .collect(Collectors.toList());
     }
 }

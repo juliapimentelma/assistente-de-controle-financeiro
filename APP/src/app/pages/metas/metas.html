@@ -1,0 +1,54 @@
+<div class="header-page">
+  <h1 class="font-tech">Meus Objetivos</h1>
+  <button class="btn-primario">Nova Meta +</button>
+</div>
+
+<div class="bento-grid">
+  
+  <!-- CARD PRINCIPAL: O Palco do Jogo (Ocupa 2 colunas) -->
+  <div class="card bg-roxo-neon card-game">
+    <div class="meta-header">
+      <h2>{{ meta().nome }}</h2>
+      <div class="valores font-tech">
+        <span class="atual">{{ meta().valorAtual | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+        <span class="alvo"> / {{ meta().valorAlvo | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+      </div>
+    </div>
+
+    <!-- INVOCANDO NOSSO COMPONENTE MÁGICO -->
+    <div class="trilha-container">
+      <app-game-progress [progresso]="progresso()"></app-game-progress>
+    </div>
+    
+    <p class="status-texto font-tech">
+      Você já completou {{ progresso() | number:'1.0-0' }}% da jornada!
+    </p>
+  </div>
+
+  <!-- CARD SECUNDÁRIO: Ações Rápidas -->
+  <div class="card">
+    <h3>Sobrou um trocado?</h3>
+    <p>Acelere sua meta guardando um pouco mais hoje.</p>
+    
+    <div class="botoes-acao font-tech">
+      <button (click)="adicionarFundos(100)">+ R$ 100</button>
+      <button (click)="adicionarFundos(500)">+ R$ 500</button>
+      <button (click)="adicionarFundos(1000)" class="btn-boost">+ R$ 1000</button>
+    </div>
+  </div>
+
+  <!-- CARD TERCIÁRIO: Dicas da IA / Status -->
+  <div class="card card-status">
+    <h3>Análise</h3>
+    <div class="stat-info">
+      <span class="label">Falta para o objetivo:</span>
+      <span class="valor font-tech destaque">
+        {{ meta().valorAlvo - meta().valorAtual | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
+      </span>
+    </div>
+    <p class="msg-ia mt-2">
+      "Continue assim! Pegar o Yoshi te deu um belo impulso."
+    </p>
+  </div>
+
+</div>

@@ -103,3 +103,21 @@ CREATE INDEX idx_orcamento_usuario ON tb_orcamento (usuario_id, mes, ano);
 CREATE INDEX idx_transacao_usuario_competencia ON tb_transacao (usuario_id, ano_competencia, mes_competencia);
 CREATE INDEX idx_transacao_categoria ON tb_transacao (categoria_id);
 CREATE INDEX idx_meta_usuario ON tb_meta_projeto (usuario_id);
+
+
+-- 1. Adiciona a coluna que define a hierarquia
+ALTER TABLE tb_categoria
+ADD COLUMN categoria_pai_id BIGINT;
+
+-- 2. Cria a relação de chave estrangeira (auto-relacionamento)
+ALTER TABLE tb_categoria
+ADD CONSTRAINT fk_categoria_pai
+FOREIGN KEY (categoria_pai_id) REFERENCES tb_categoria(id);
+
+-- 3. (Opcional) Se você quiser que o orçamento também suporte subcategorias:
+ALTER TABLE tb_orcamento
+ADD COLUMN subcategoria_id BIGINT;
+
+ALTER TABLE tb_orcamento
+ADD CONSTRAINT fk_subcategoria
+FOREIGN KEY (subcategoria_id) REFERENCES tb_categoria(id);

@@ -7,6 +7,5 @@ import java.util.List;
 public record CategoriaResponse(
         Long id,
         String nome,
-        TipoCategoria tipo,
-        List<SubcategoriaResponse> subcategorias
+        List<CategoriaResponse> subcategorias
 ) {}

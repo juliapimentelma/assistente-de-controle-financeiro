@@ -33,15 +33,21 @@ export class Dashboard implements OnInit {
     const categorias = this.dados()?.categoriasDespesa;
     if (!categorias || categorias.length === 0) return 'conic-gradient(#333 0% 100%)';
 
+    const paletaCores = [ '#EAFB35', '#8F55DD', '#B892FF',  '#000000', '#8EC4B5', '#D25050'];
+    
     let gradient = '';
     let acumulado = 0;
 
     categorias.forEach((cat, index) => {
+
+      const cor = paletaCores[index % paletaCores.length];
+      cat.corHex = cor; 
+
       const inicio = acumulado;
       acumulado += cat.porcentagem;
       const fim = acumulado;
-      
-      gradient += `${cat.corHex} ${inicio}% ${fim}%`;
+
+      gradient += `${cor} ${inicio}% ${fim}%`;
       if (index < categorias.length - 1) gradient += ', ';
     });
 

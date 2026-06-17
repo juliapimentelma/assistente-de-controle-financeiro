@@ -4,6 +4,7 @@ import { Cadastro } from './pages/auth/cadastro/cadastro';
 import { Dashboard } from './pages/dashboard/dashboard';
 import { authGuard } from './core/guards/auth-guard';
 import { MainLayout } from './layout/main-layout';
+import { Metas } from './pages/metas/metas';
 
 export const routes: Routes = [
   { 
@@ -20,6 +21,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: 'dashboard', component: Dashboard },
+      { path: 'metas', component: Metas},
       
       // ROTAS FUTURAS (Vamos descomentando conforme formos criando)
       // { path: 'extrato', component: ExtratoComponent },

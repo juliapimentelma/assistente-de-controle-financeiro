@@ -21,3 +21,9 @@ export interface DashboardResponse {
   categoriasDespesa: CategoriaResumo[];
   ultimasTransacoes: TransacaoResumo[];
 }
+
+export interface CategoriaDespesa {
+  nome: string;
+  porcentagem: number;
+  corHex?: string;
+}

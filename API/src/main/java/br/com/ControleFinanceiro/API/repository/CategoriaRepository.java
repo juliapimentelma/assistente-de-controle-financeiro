@@ -8,4 +8,6 @@ import java.util.List;
 public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
 
     List<Categoria> findAllByUsuarioId(Long usuarioId);
+
+    List<Categoria> findByCategoriaPaiIsNull();
 }

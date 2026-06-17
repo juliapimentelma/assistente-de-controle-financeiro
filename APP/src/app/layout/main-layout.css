@@ -9,8 +9,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2.5rem;
+  padding: 0.5rem 2.5rem;
   background-color: var(--bg-principal);
+  height: 70px;
 }
 
 .logo {
@@ -63,21 +64,27 @@
 
 .navbar {
   background-color: #000000;
-  color: #ffffff;
+  color: var(--bg-principal);
   border-top: 2px solid var(--texto-primario);
   border-bottom: 2px solid var(--texto-primario);
+  display: flex;
+  justify-content: center;
+}
+
+
+.nav-list li {
+  flex: 1; 
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
 }
 
 .nav-list {
   list-style: none;
   display: flex;
+  flex-direction: row; 
   margin: 0;
-  padding: 0;
-  overflow-x: auto;
-}
-
-.nav-list li {
-  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  width: 100%;
+  max-width: 1440px;
 }
 
 .nav-list li:last-child {
@@ -85,12 +92,13 @@
 }
 
 .nav-item {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.8rem;
   padding: 1.2rem 1rem;
-  color: #e3e3e3;
+  color: var(--bg-principal);
   text-decoration: none;
   font-size: 0.9rem;
   position: relative;
@@ -103,6 +111,7 @@
 }
 
 .icon-svg {
+  color: var(--bg-principal);
   width: 24px;
   height: 24px;
   filter: invert(1);

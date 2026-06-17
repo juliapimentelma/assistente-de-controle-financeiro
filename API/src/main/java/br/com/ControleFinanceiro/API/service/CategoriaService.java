@@ -17,6 +17,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -64,5 +65,17 @@ public class CategoriaService {
     private Long getUsuarioLogadoId() {
         Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return Long.parseLong(jwt.getSubject());
+    }
+
+    public List<CategoriaResponse> buscarCategoriasComSubcategorias() {
+        return categoriaRepository.findByCategoriaPaiIsNull().stream()
+                .map(c -> new CategoriaResponse(
+                        c.getId(),
+                        c.getNome(),
+                        c.getSubcategorias().stream()
+                                .map(sub -> new CategoriaResponse(sub.getId(), sub.getNome(), null))
+                                .collect(Collectors.toList())
+                ))
+                .collect(Collectors.toList());
     }
 }

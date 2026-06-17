@@ -17,22 +17,7 @@
       </div>
     </div>
 
-    <div class="card card-rosca">
-      <h3>Distribuição de categorias</h3>
-      <div class="rosca-container">
-        <div class="grafico-rosca" [style.background]="getConicGradient()"></div>
-      </div>
-      <div class="legenda-categorias">
-        @for (cat of dash.categoriasDespesa; track cat.nome) {
-          <div class="legenda-item">
-            <span class="bolinha" [style.background-color]="'var(--amarelo-base)'"></span>
-            <span class="font-tech">{{ cat.nome }} ({{ cat.porcentagem }}%)</span>
-          </div>
-        }
-      </div>
-    </div>
-
-    <div class="card">
+    <div class="card card-metas">
       <h3>Como estão minhas metas?</h3>
       <div class="barra-progresso-container">
         <div class="barra-fundo">
@@ -46,10 +31,40 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card card-ia">
       <h3>Tô podendo ainda?</h3>
-      <h2 class="font-tech msg-ia">Você ainda pode gastar {{ dash.valorDisponivelMes | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</h2>
+      <h2 class="font-tech msg-ia">Você ainda pode gastar {{ dash.valorDisponivelMes | currency:'BRL':'symbol':'1.2-2':'pt-BR' }} este mês</h2>
       <p>Não abuse da sorte...</p>
+    </div>
+
+    <div class="card card-rosca">
+      <h3>Distribuição de categorias (Despesas)</h3>
+      
+      <div class="rosca-container">
+        <div class="grafico-rosca" [style.background]="getConicGradient()">
+          <div class="furo-rosca"></div>
+        </div>
+      </div>
+
+      <div class="legenda-categorias font-tech">
+        @for (cat of dash.categoriasDespesa; track cat.nome) {
+          <div class="legenda-item">
+            <span class="bolinha" [style.background]="cat.corHex"></span> 
+            {{ cat.nome }} ({{ cat.porcentagem }}%)
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="card card-extrato">
+      <div class="extrato-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3>Resumo do Extrato</h3>
+        <button style="background: var(--amarelo-base); border: none; padding: 5px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; color: var(--bg-principal);">Exportar PDF</button>
+      </div>
+      
+      <div class="extrato-conteudo" style="flex-grow: 1; display: flex; align-items: center; justify-content: center; border: 1px dashed var(--texto-primario); border-radius: 8px; opacity: 0.5;">
+         <p class="font-tech">A tabela de transações vai entrar aqui...</p>
+      </div>
     </div>
 
   </div>

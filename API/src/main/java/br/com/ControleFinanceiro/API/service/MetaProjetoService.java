@@ -54,10 +54,17 @@ public class MetaProjetoService {
     @Transactional
     public MetaResponse realizarAporte(Long id, AporteRequest dto) {
         MetaProjeto meta = buscarMetaDoUsuario(id);
+        Usuario usuario = meta.getUsuario();
 
         if (meta.getStatus() == StatusMeta.CONCLUIDA) {
             throw new NegocioException("Esta meta já foi concluída! Parabéns!");
         }
+
+        if (usuario.getSaldoAtual().compareTo(dto.valor()) < 0) {
+            throw new NegocioException("Saldo insuficiente! Você não tem esse valor disponível para aportar.");
+        }
+
+        usuario.setSaldoAtual(usuario.getSaldoAtual().subtract(dto.valor()));
 
         BigDecimal novoValorAtual = meta.getValorAtual().add(dto.valor());
         meta.setValorAtual(novoValorAtual);
@@ -66,12 +73,12 @@ public class MetaProjetoService {
             meta.setStatus(StatusMeta.CONCLUIDA);
             meta.setValorAtual(meta.getValorAlvo());
 
-            Usuario usuario = meta.getUsuario();
             usuario.setScoreFinanceiro(usuario.getScoreFinanceiro() + 20);
-            usuarioRepository.save(usuario);
         }
 
+        usuarioRepository.save(usuario);
         meta = metaRepository.save(meta);
+
         return metaMapper.toResponseDTO(meta);
     }
 
