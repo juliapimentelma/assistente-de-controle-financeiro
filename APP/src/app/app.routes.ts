@@ -7,6 +7,7 @@ import { MainLayout } from './layout/main-layout';
 import { Metas } from './pages/metas/metas';
 import { Transacoes } from './pages/transacoes/transacoes';
 import { Orcamentos } from './pages/orcamentos/orcamentos';
+import { PossoComprar } from './pages/posso-comprar/posso-comprar';
 
 export const routes: Routes = [
   { 
@@ -31,11 +32,7 @@ export const routes: Routes = [
       component: Transacoes 
       },
       { path: 'orcamentos', component: Orcamentos },
-      // { path: 'metas', component: MetasComponent },
-      // { path: 'simulacao', component: SimulacaoComponent },
-      // { path: 'ia', component: IaChatComponent },
-      
-      // Rota padrão: se o usuário logar e a URL estiver vazia, joga pro dashboard!
+      {path: 'posso-comprar', title: 'Posso Comprar? - Conselheiro IA', component: PossoComprar},
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },

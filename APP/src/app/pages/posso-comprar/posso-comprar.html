@@ -1,0 +1,58 @@
+<div class="chat-container">
+  
+  <div class="chat-header">
+    <h1 class="font-tech">Posso Comprar?</h1>
+    <span>Seu assistente financeiro</span>
+  </div>
+
+  <div class="chat-mensagens" id="chatArea">
+    @for (msg of mensagens(); track $index) {
+      <div class="mensagem-linha" [ngClass]="msg.remetente">
+        
+        <div class="avatar font-tech">
+          {{ msg.remetente === 'usuario' ? 'JP' : 'IA' }}
+        </div>
+        
+        <div class="texto-balao">
+          <p>{{ msg.texto }}</p>
+        </div>
+
+      </div>
+    }
+
+    @if (carregando()) {
+      <div class="mensagem-linha ia">
+        <div class="avatar font-tech">IA</div>
+        <div class="texto-balao">
+          <div class="digitando">
+            <span class="ponto"></span><span class="ponto"></span><span class="ponto"></span>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="chat-input-area">
+    <input 
+      type="text" 
+      [(ngModel)]="item" 
+      (keyup.enter)="enviarPergunta()"
+      class="input-item"
+    >
+    
+    <div class="input-grupo-valor">
+      <span class="moeda-prefixo font-tech">R$</span>
+      <input 
+        type="number" 
+        [(ngModel)]="valor" 
+        (keyup.enter)="enviarPergunta()"
+        class="input-valor"
+      >
+    </div>
+    
+    <button class="btn-enviar" (click)="enviarPergunta()" [disabled]="!item || !valor">
+      <span class="material-symbols-rounded">send</span>
+    </button>
+  </div>
+
+</div>

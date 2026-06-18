@@ -19,7 +19,8 @@
 
 .header-page h1 {
   margin: 0;
-  font-size: 2.2rem;
+  font-weight: 400;
+  font-size: 2rem;
   color: var(--texto-primario);
 }
 
@@ -73,13 +74,13 @@
   margin-bottom: 1.5rem;
 }
 
-/* Card Principal da Meta */
 .bg-roxo-neon {
   background: var(--bg-card); 
   color: var(--texto-primario);
   grid-column: span 2;
   position: relative;
   overflow: hidden;
+  align-self: start;
 }
 
 .meta-header {
@@ -94,7 +95,8 @@
 .meta-header h2 {
   font-family: var(--font-principal);
   margin: 0;
-  font-size: 2rem;
+  font-weight: 400;
+  font-size: 1.5rem;
   color: var(--texto-primario);
 }
 
@@ -103,9 +105,9 @@
 }
 
 .valores .atual {
-  font-size: 2.2rem;
+  font-weight: 700;
+  font-size: 1.75rem;
   color: var(--roxo-principal);
-  font-weight: bold;
 }
 
 .valores .alvo {

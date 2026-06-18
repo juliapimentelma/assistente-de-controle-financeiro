@@ -116,25 +116,29 @@
   white-space: nowrap;
 }
 
-.nav-item .material-symbols-rounded {
-  font-size: 1.5rem;
-}
-
-.icon-svg {
-  color: var(--bg-principal);
+.icon-svg.sparkles-icon {
   width: 24px;
   height: 24px;
-  filter: invert(1);
-  transition: all 0.3s;
+  display: inline-block;
+
+  background-color: var(--bg-principal); 
+  
+  -webkit-mask: url('/assets/sparkles.svg') no-repeat center / contain;
+  mask: url('/assets/sparkles.svg') no-repeat center / contain;
+  
+  transition: background-color 0.3s ease;
+}
+
+.nav-item:hover .icon-svg.sparkles-icon {
+  background-color: var(--roxo-principal);
+}
+
+.nav-item.ativo .icon-svg.sparkles-icon {
+  background-color: var(--amarelo-base);
 }
 
 .nav-item:hover, .nav-item.ativo {
-  background-color: rgba(255, 255, 255, 0.05);
   color: var(--amarelo-base);
-}
-
-.nav-item:hover .icon-svg, .nav-item.ativo .icon-svg {
-  filter: invert(80%) sepia(80%) saturate(800%) hue-rotate(30deg) brightness(120%);
 }
 
 .main-content {
