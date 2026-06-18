@@ -1,25 +1,20 @@
 <div class="game-track-container">
   
-  <!-- A barra cinza de fundo -->
   <div class="track-bg"></div>
-  
-  <!-- A barra colorida que acompanha o Mario -->
+
   <div class="track-fill" [style.width.%]="progresso"></div>
 
-  <!-- A trilha de moedas e power-ups -->
-  <!-- A classe 'coletado' é ativada quando o Mario passa pelo item -->
   @for (item of itensTrilha; track item.posicao) {
     <div 
       class="track-item" 
       [class.coletado]="progresso >= item.posicao"
       [style.left.%]="item.posicao">
-      <img [src]="'assets/images/' + item.img" alt="Item da Trilha">
+      <img [src]="'/assets/' + item.img" alt="Item da Trilha">
     </div>
   }
 
-  <!-- O nosso Herói -->
   <div class="mario-character" [style.left.%]="progresso">
-    <img [src]="'assets/images/' + marioSprite" alt="Mario Sprite">
+    <img [src]="'/assets/' + marioSprite" alt="Mario Sprite">
   </div>
 
 </div>

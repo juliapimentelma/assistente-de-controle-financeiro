@@ -1,50 +1,98 @@
 <div class="header-page">
-  <h1 class="font-tech">Meus Objetivos</h1>
-  <button class="btn-primario">Nova Meta +</button>
+  <h1 class="font-tech">Minhas Metas</h1>
+  <button class="btn-primario" (click)="abrirModalCriar()">Nova Meta +</button>
 </div>
 
-<div class="bento-grid">
+@for (m of metas(); track m.id) {
+  <div class="bento-grid" style="margin-bottom: 2rem;">
 
-  <div class="card bg-roxo-neon card-game">
-    <div class="meta-header">
-      <h2>{{ meta().nome }}</h2>
-      <div class="valores font-tech">
-        <span class="atual">{{ meta().valorAtual | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
-        <span class="alvo"> / {{ meta().valorAlvo | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+    <div class="card bg-roxo-neon card-game">
+      <div class="meta-header">
+        <h2>{{ m.titulo }}</h2>
+        <div class="valores font-tech">
+          <span class="atual">{{ m.valorAtual | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+          <span class="alvo"> / {{ m.valorAlvo | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+        </div>
+      </div>
+
+      <div class="trilha-container">
+        <app-game-progress [progresso]="(m.valorAtual / m.valorAlvo) * 100"></app-game-progress>
+      </div>
+      
+      <p class="status-texto font-tech">
+        Você já completou {{ (m.valorAtual / m.valorAlvo) * 100 | number:'1.0-0' }}% da jornada!
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Sobrou um trocado?</h3>
+      <p>Acelere sua meta guardando um pouco mais hoje.</p>
+      
+      <div class="botoes-acao font-tech">
+        <button (click)="prepararAporte(m.id, 100)">+ R$ 100</button>
+        <button (click)="prepararAporte(m.id, 500)">+ R$ 500</button>
+        <button (click)="prepararAporte(m.id, 1000)" class="btn-boost">+ R$ 1000</button>
       </div>
     </div>
+  </div>
+} @empty {
+  <div class="bento-grid">
+    <div class="card bg-roxo-neon card-game" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+      <h2>Nenhuma meta por aqui ainda!</h2>
+      <p style="margin-top: 1rem;">Clique em "Nova Meta +" ali em cima para começar seu próximo grande objetivo.</p>
+    </div>
+  </div>
+}
 
-    <div class="trilha-container">
-      <app-game-progress [progresso]="progresso()"></app-game-progress>
+@if (modalAporte().aberto) {
+  <div class="modal-overlay" (click)="fecharModal()">
+    
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <h2 class="font-tech">Confirmar Aporte</h2>
+      <p>Deseja transferir <strong>{{ modalAporte().valor | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</strong> do seu saldo para esta meta?</p>
+      
+      <div class="modal-acoes font-tech">
+        <button class="btn-cancelar" (click)="fecharModal()">Cancelar</button>
+        <button class="btn-confirmar" (click)="confirmarAporte()">Sim, Transferir</button>
+      </div>
     </div>
     
-    <p class="status-texto font-tech">
-      Você já completou {{ progresso() | number:'1.0-0' }}% da jornada!
-    </p>
   </div>
+}
 
-  <div class="card">
-    <h3>Sobrou um trocado?</h3>
-    <p>Acelere sua meta guardando um pouco mais hoje.</p>
+@if (modalCriarAberto()) {
+  <div class="modal-overlay" (click)="fecharModalCriar()">
     
-    <div class="botoes-acao font-tech">
-      <button (click)="adicionarFundos(100)">+ R$ 100</button>
-      <button (click)="adicionarFundos(500)">+ R$ 500</button>
-      <button (click)="adicionarFundos(1000)" class="btn-boost">+ R$ 1000</button>
-    </div>
-  </div>
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <h2 class="font-tech">Nova Jornada</h2>
+      <p>Defina qual será seu próximo grande objetivo!</p>
+      
+      <form [formGroup]="metaForm" (ngSubmit)="salvarNovaMeta()" class="form-modal">
+        
+        <div class="input-group">
+          <label>Título da Meta</label>
+          <input type="text" formControlName="titulo" placeholder="Ex: Viagem para o Japão">
+        </div>
 
-  <div class="card card-status">
-    <h3>Análise</h3>
-    <div class="stat-info">
-      <span class="label">Falta para o objetivo:</span>
-      <span class="valor font-tech destaque">
-        {{ meta().valorAlvo - meta().valorAtual | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
-      </span>
-    </div>
-    <p class="msg-ia mt-2">
-      "Continue assim! Pegar o Yoshi te deu um belo impulso."
-    </p>
-  </div>
+        <div class="row-inputs">
+          <div class="input-group">
+            <label>Valor Alvo (R$)</label>
+            <input type="text" formControlName="valorAlvo" placeholder="R$ 0,00" (input)="formatarMoeda($event)">
+          </div>
+          
+          <div class="input-group">
+            <label>Data Alvo</label>
+            <input type="date" formControlName="dataAlvo">
+          </div>
+        </div>
 
-</div>
+        <div class="modal-acoes font-tech mt-2">
+          <button type="button" class="btn-cancelar" (click)="fecharModalCriar()">Cancelar</button>
+          <button type="submit" class="btn-confirmar" [disabled]="metaForm.invalid">Criar Meta</button>
+        </div>
+
+      </form>
+    </div>
+    
+  </div>
+}

@@ -1,13 +1,13 @@
 export interface MetaRequest {
   titulo: string;
-  valorObjetivo: number;
+  valorAlvo: number;
   dataAlvo: string;
 }
 
 export interface MetaResponse {
   id: number;
   titulo: string;
-  valorObjetivo: number;
+  valorAlvo: number;
   valorAtual: number;
   percentualConcluido: number;
   dataAlvo: string;
