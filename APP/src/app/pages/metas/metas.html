@@ -4,8 +4,7 @@
 </div>
 
 <div class="bento-grid">
-  
-  <!-- CARD PRINCIPAL: O Palco do Jogo (Ocupa 2 colunas) -->
+
   <div class="card bg-roxo-neon card-game">
     <div class="meta-header">
       <h2>{{ meta().nome }}</h2>
@@ -15,7 +14,6 @@
       </div>
     </div>
 
-    <!-- INVOCANDO NOSSO COMPONENTE MÁGICO -->
     <div class="trilha-container">
       <app-game-progress [progresso]="progresso()"></app-game-progress>
     </div>
@@ -25,7 +23,6 @@
     </p>
   </div>
 
-  <!-- CARD SECUNDÁRIO: Ações Rápidas -->
   <div class="card">
     <h3>Sobrou um trocado?</h3>
     <p>Acelere sua meta guardando um pouco mais hoje.</p>
@@ -37,7 +34,6 @@
     </div>
   </div>
 
-  <!-- CARD TERCIÁRIO: Dicas da IA / Status -->
   <div class="card card-status">
     <h3>Análise</h3>
     <div class="stat-info">

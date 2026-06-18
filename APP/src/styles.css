@@ -22,7 +22,8 @@
   --roxo-base: #8F55DD;      /* Roxo da ponta (base/sombra) */
 
   /* Status (Receitas e Despesas) */
-  --verde-receita: #8EC4B5;   /* Verde pastel */
+  --verde-receita: #8EC4B5;
+  --amarelo-receita: #ccaa4a;   /* Verde pastel */
   --vermelho-despesa: #D25050; /* Vermelho/Coral */
 
   /* Tipografia */

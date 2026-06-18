@@ -9,14 +9,16 @@ import br.com.ControleFinanceiro.API.exception.NegocioException;
 import br.com.ControleFinanceiro.API.mapper.OrcamentoMapper;
 import br.com.ControleFinanceiro.API.repository.CategoriaRepository;
 import br.com.ControleFinanceiro.API.repository.OrcamentoRepository;
+import br.com.ControleFinanceiro.API.repository.TransacaoRepository;
 import br.com.ControleFinanceiro.API.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,12 +30,32 @@ public class OrcamentoService {
     private final CategoriaRepository categoriaRepository;
     private final UsuarioRepository usuarioRepository;
     private final OrcamentoMapper orcamentoMapper;
+    private final TransacaoRepository transacaoRepository;
 
+    @Transactional(readOnly = true)
     public List<OrcamentoResponse> listarPorMesEAno(Integer mes, Integer ano) {
         Long usuarioId = getUsuarioLogadoId();
 
         return orcamentoRepository.findByUsuarioIdAndMesAndAno(usuarioId, mes, ano).stream()
-                .map(orcamentoMapper::toResponseDTO)
+                .map(orcamento -> {
+                    BigDecimal gasto = transacaoRepository.somarGastosPorCategoriaEMes(
+                            usuarioId,
+                            orcamento.getCategoria().getId(),
+                            mes,
+                            ano
+                    );
+
+                    return new OrcamentoResponse(
+                            orcamento.getId(),
+                            orcamento.getMes(),
+                            orcamento.getAno(),
+                            orcamento.getValorPlanejado(),
+                            orcamento.getCategoria().getId(),
+                            orcamento.getCategoria().getNome(),
+                            orcamento.getCategoria().getTipo().name(),
+                            gasto
+                    );
+                })
                 .toList();
     }
 

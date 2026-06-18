@@ -1,0 +1,69 @@
+<div class="orcamento-page">
+  
+  <div class="card-form">
+    <h1 class="titulo">Adicionar Orçamento</h1>
+    <p class="subtitulo">Nessa aba, você adicionará o quanto pretende gastar no montante do mês que você escolher, e verá como as transações do "Meu extrato" estão afetando no seu orçamento.</p>
+
+    <form [formGroup]="orcamentoForm" (ngSubmit)="salvarOrcamento()" class="form-container">
+      
+      <div class="form-step">
+        <span class="step-num">01.</span>
+        <label class="step-label">Período</label>
+        <div class="row-inputs">
+          <label>Mês: <input type="number" formControlName="mes" min="1" max="12"></label>
+          <label>Ano: <input type="number" formControlName="ano" min="2024"></label>
+        </div>
+      </div>
+
+      <div class="form-step">
+        <span class="step-num">02.</span>
+        <label class="step-label">Categoria</label>
+        <select formControlName="categoriaId">
+          <option value="" disabled selected>Selecione...</option>
+          @for (cat of categorias(); track cat.id) {
+            <option [value]="cat.id">{{ cat.nome }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-step">
+        <span class="step-num">03.</span>
+        <label class="step-label">Valor Planejado</label>
+        <div class="input-money">
+          <span>R$</span>
+          <input type="text" formControlName="valorTexto" (input)="aplicarMascaraMoeda($event)" placeholder="0,00">
+        </div>
+      </div>
+
+      <div class="form-acoes">
+        <button type="button" class="btn-cancelar" (click)="cancelar()">Cancelar</button>
+        <button type="submit" class="btn-salvar" [disabled]="orcamentoForm.invalid">Salvar</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="card-barras">
+    @for (orc of orcamentosComProgresso(); track orc.id) {
+      <div class="barra-item">
+        <h3 class="barra-titulo">{{ orc.nomeCategoria }}</h3>
+        
+        <div class="progress-bg">
+          <div class="progress-fill" 
+               [style.width.%]="orc.percentual > 100 ? 100 : orc.percentual"
+               [ngClass]="getCorBarra(orc.percentual)">
+          </div>
+        </div>
+        
+        <div class="barra-legendas">
+          <span>Gasto: {{ (orc.valorGasto || 0) | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+          <span>Limite: {{ orc.valorPlanejado | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+        </div>
+      </div>
+    } @empty {
+      <p class="vazio" style="color: #666; text-align: center; margin-top: 2rem;">
+        Nenhum orçamento definido para este período.
+      </p>
+    }
+  </div>
+
+</div>

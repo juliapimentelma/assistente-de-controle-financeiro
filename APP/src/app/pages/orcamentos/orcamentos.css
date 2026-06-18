@@ -1,0 +1,242 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  background-color: var(--bg-principal); 
+  padding: 2rem;
+  box-sizing: border-box;
+  min-height: 100%;
+}
+
+.orcamento-page {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 2rem;
+  height: 100%;
+  align-items: start;
+}
+
+.card-form {
+  background-color: var(--bg-card);
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  font-family: 'Montserrat', sans-serif;
+  color: var(--texto-primario);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.titulo {
+  font-weight: 500;
+  font-size: 2rem;
+  margin-bottom: 0.8rem;
+  margin-top: 0;
+}
+
+.subtitulo {
+  font-size: 0.85rem;
+  color: var(--texto-secundario);
+  line-height: 1.5;
+  margin-bottom: 3rem;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.form-step {
+  margin-bottom: 2rem;
+}
+
+.step-num {
+  font-family: 'Georgia', 'Times New Roman', serif; 
+  font-size: 1.6rem;
+  margin-right: 0.5rem;
+  font-weight: normal;
+}
+
+.step-label {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: 1.6rem;
+  font-weight: normal;
+}
+
+.row-inputs {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.8rem;
+}
+
+.row-inputs label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.form-step input, 
+.form-step select {
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 10px;
+  background-color: #F6F4EF;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  margin-top: 0.8rem;
+  outline: none;
+  box-sizing: border-box;
+  transition: box-shadow 0.2s;
+}
+
+.form-step input:focus, 
+.form-step select:focus {
+  box-shadow: 0 0 0 2px rgba(140, 190, 172, 0.5); 
+}
+
+.row-inputs input {
+  width: 120px;
+}
+
+.input-money {
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-principal);
+  border-radius: 10px;
+  padding-left: 16px;
+  margin-top: 0.8rem;
+}
+
+.input-money span {
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.input-money input {
+  margin-top: 0;
+  background: transparent;
+}
+
+.input-money input:focus {
+  box-shadow: none;
+}
+
+.input-money:focus-within {
+  box-shadow: 0 0 0 2px rgba(140, 190, 172, 0.5);
+}
+
+.form-acoes {
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 2rem;
+}
+
+.btn-cancelar {
+  background-color: #000;
+  color: var(--bg-principal);
+  border: none;
+  border-radius: 25px;
+  padding: 12px 35px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-cancelar:hover {
+  opacity: 0.8;
+}
+
+.btn-salvar {
+  background-color: var(--verde-receita);
+  color: var(--texto-primario);
+  border: none;
+  border-radius: 25px;
+  padding: 12px 45px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.2s, filter 0.2s;
+}
+
+.btn-salvar:hover:not(:disabled) {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.btn-salvar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.card-barras {
+  background-color: var(--bg-card);
+  border-radius: 20px;
+  padding: 3rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  font-family: 'Montserrat', sans-serif;
+  box-sizing: border-box;
+}
+
+.barra-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.barra-titulo {
+  font-weight: 500;
+  font-size: 1.1rem;
+  margin-bottom: 0.8rem;
+  margin-top: 0;
+  color: var(--texto-primario);
+}
+
+.progress-bg {
+  width: 100%;
+  height: 38px;
+  background-color: rgba(0, 0, 0, 0.06); 
+  border-radius: 25px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 25px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s;
+}
+
+.cor-verde { background-color: var(--verde-receita); }
+.cor-amarelo { background-color: var(--amarelo-receita); }
+.cor-vermelho { background-color: var(--vermelho-despesa); }
+
+.barra-legendas {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--texto-secundario);
+  font-weight: 500;
+}
+
+@media (max-width: 1100px) {
+  .orcamento-page {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-acoes {
+    margin-top: 3rem;
+  }
+}

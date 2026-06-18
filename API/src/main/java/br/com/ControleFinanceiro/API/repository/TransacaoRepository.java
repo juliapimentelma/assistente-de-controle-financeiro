@@ -18,18 +18,20 @@ public interface TransacaoRepository extends JpaRepository<Transacao, Long> {
             Long usuarioId, Integer mesCompetencia, Integer anoCompetencia, Pageable pageable);
 
     @Query("""
-        SELECT COALESCE(SUM(t.valor), 0) FROM Transacao t 
+        SELECT COALESCE(SUM(t.valor), 0) 
+        FROM Transacao t 
         WHERE t.usuario.id = :usuarioId 
-        AND t.subcategoria.categoria.id = :categoriaId 
-        AND t.mesCompetencia = :mes 
-        AND t.anoCompetencia = :ano 
-        AND t.subcategoria.categoria.tipo = 'DESPESA'
+          AND t.categoria.id = :categoriaId 
+          AND t.mesCompetencia = :mes 
+          AND t.anoCompetencia = :ano 
+          AND t.categoria.tipo = 'DESPESA'
     """)
     BigDecimal somarGastosPorCategoriaEMes(
             @Param("usuarioId") Long usuarioId,
             @Param("categoriaId") Long categoriaId,
             @Param("mes") Integer mes,
-            @Param("ano") Integer ano);
+            @Param("ano") Integer ano
+    ); // <-- O parênteses que faltava estava bem aqui!
 
     List<Transacao> findTop5ByUsuarioIdOrderByDataCriacaoDesc(Long usuarioId);
 
@@ -51,4 +53,5 @@ public interface TransacaoRepository extends JpaRepository<Transacao, Long> {
             @Param("mes") int mes,
             @Param("ano") int ano
     );
+
 }

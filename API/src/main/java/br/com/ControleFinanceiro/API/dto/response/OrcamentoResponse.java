@@ -11,5 +11,6 @@ public record OrcamentoResponse(
         BigDecimal valorPlanejado,
         Long categoriaId,
         String nomeCategoria,
-        TipoCategoria tipoCategoria
+        String tipoCategoria,
+        BigDecimal valorGasto
 ) {}

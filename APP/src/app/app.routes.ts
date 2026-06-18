@@ -6,6 +6,7 @@ import { authGuard } from './core/guards/auth-guard';
 import { MainLayout } from './layout/main-layout';
 import { Metas } from './pages/metas/metas';
 import { Transacoes } from './pages/transacoes/transacoes';
+import { Orcamentos } from './pages/orcamentos/orcamentos';
 
 export const routes: Routes = [
   { 
@@ -29,7 +30,7 @@ export const routes: Routes = [
       title: 'Meu Extrato',
       component: Transacoes 
       },
-      // { path: 'orcamentos', component: OrcamentosComponent },
+      { path: 'orcamentos', component: Orcamentos },
       // { path: 'metas', component: MetasComponent },
       // { path: 'simulacao', component: SimulacaoComponent },
       // { path: 'ia', component: IaChatComponent },

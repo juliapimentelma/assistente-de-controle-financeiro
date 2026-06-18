@@ -51,7 +51,6 @@
   }
 }
 
-/* Destaque para o Card do Jogo */
 .card-game {
   grid-column: span 2;
   background-color: var(--bg-card);
@@ -80,7 +79,7 @@
   }
 
   .trilha-container {
-    padding: 2rem 0; /* Espaço para o Mario não cortar nos cantos */
+    padding: 2rem 0;
   }
 
   .status-texto {
@@ -131,7 +130,7 @@
     }
     .destaque {
       font-size: 2rem;
-      color: #ff4757; /* Um tom de alerta elegante */
+      color: #ff4757;
       margin-top: 5px;
     }
   }
