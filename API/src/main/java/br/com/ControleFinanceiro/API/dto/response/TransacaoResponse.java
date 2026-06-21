@@ -16,5 +16,8 @@ public record TransacaoResponse(
         StatusTransacao status,
         String nomeSubcategoria,
         String nomeCategoriaMaior,
-        TipoCategoria tipo
+        TipoCategoria tipo,
+        Integer parcelaAtual,
+        Integer totalParcelas,
+        String grupoId
 ) {}

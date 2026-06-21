@@ -46,32 +46,51 @@
           <th>Editar</th>
         </tr>
       </thead>
+      
       <tbody>
         @for (t of transacoesFiltradas(); track t.id) {
           
-          <tr [class.linha-expandida]="transacoesExpandidas().has(t.id)">
+          <tr [class.linha-expandida]="linhasExpandidas().has(t.id)">
             <td class="col-descricao">
-              @if (t.parcelas && t.parcelas.length > 0) {
-                <span class="material-symbols-rounded icon-expand" 
-                      (click)="toggleExpandir(t.id)"
-                      [style.transform]="transacoesExpandidas().has(t.id) ? 'rotate(180deg)' : 'none'">
-                  arrow_drop_down
-                </span>
-              } @else {
-                <span class="espacador-icone"></span>
-              }
-              
-              {{ t.descricao }}
+              <div style="display: flex; align-items: center; gap: 8px;">
+                
+                @if (t.totalParcelas && t.totalParcelas > 1 && t.grupoId) {
+                  <button type="button" 
+                          (click)="toggleExpandir(t); $event.stopPropagation()" 
+                          style="background: none; border: none; padding: 0; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;">
+                    <span class="material-symbols-rounded icon-expand" 
+                          [style.transform]="linhasExpandidas().has(t.id) ? 'rotate(180deg)' : 'none'">
+                      arrow_drop_down
+                    </span>
+                  </button>
+                } @else {
+                  <span class="espacador-icone"></span>
+                }
+                
+                {{ t.descricao }} 
+                
+                @if (t.totalParcelas && t.totalParcelas > 1) {
+                  <span style="font-size: 0.8rem; opacity: 0.7;">
+                    ({{ t.parcelaAtual }}/{{ t.totalParcelas }})
+                  </span>
+                }
+              </div>
             </td>
+            
             <td [ngClass]="t.tipo === 'DESPESA' ? 'text-despesa' : 'text-receita'">
               {{ t.tipo | titlecase }}
             </td>
+            
             <td>{{ t.nomeCategoriaMaior }} - {{ t.nomeSubcategoria }}</td>
+            
             <td>{{ t.dataVencimento | date:'dd/MM/yyyy' }}</td>
+            
             <td>{{ t.status | titlecase }}</td>
+            
             <td [ngClass]="t.tipo === 'DESPESA' ? 'text-despesa' : 'text-receita'">
               {{ t.valor | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
             </td>
+            
             <td class="col-acoes">
               <button class="btn-icon text-despesa" (click)="pedirExclusao(t)" title="Excluir">
                 <span class="material-symbols-rounded">delete</span>
@@ -82,20 +101,30 @@
             </td>
           </tr>
 
-          @if (t.parcelas && t.parcelas.length > 0 && transacoesExpandidas().has(t.id)) {
-            @for (p of t.parcelas; track p.id) {
-              <tr class="linha-parcela">
-                <td class="col-descricao-parcela">
-                  {{ p.numero }}/{{ t.parcelas.length }}
-                </td>
-                <td></td> <td></td>
-                <td class="texto-menor">{{ p.data | date:'dd/MM/yyyy' }}</td>
-                <td></td>
-                <td [ngClass]="t.tipo === 'DESPESA' ? 'text-despesa' : 'text-receita'" class="texto-menor">
-                  {{ p.valor | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
-                </td>
-                <td></td>
-              </tr>
+          @if (t.totalParcelas && t.totalParcelas > 1 && linhasExpandidas().has(t.id) && parcelasCarregadas()[t.grupoId!]) {
+            @for (p of parcelasCarregadas()[t.grupoId!]; track p.id) {
+              
+              @if (p.id !== t.id) {
+                <tr class="linha-parcela">
+                  <td class="col-descricao-parcela">
+                    Parcela {{ p.parcelaAtual }}/{{ p.totalParcelas }}
+                  </td>
+                  
+                  <td></td>
+                  <td></td>
+                  
+                  <td class="texto-menor">{{ p.dataVencimento | date:'dd/MM/yyyy' }}</td>
+                  
+                  <td class="texto-menor">{{ p.status | titlecase }}</td>
+                  
+                  <td class="texto-menor" [ngClass]="p.tipo === 'DESPESA' ? 'text-despesa' : 'text-receita'">
+                    {{ p.valor | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
+                  </td>
+                  
+                  <td></td>
+                </tr>
+              }
+
             }
           }
 
@@ -131,7 +160,7 @@
         </div>
 
         <div class="form-group">
-          <label>Valor (R$)</label>
+          <label>Valor Total (R$)</label>
           <input type="text" formControlName="valorTexto" placeholder="0,00" (input)="aplicarMascaraMoeda($event)">
         </div>
       </div>
@@ -139,7 +168,7 @@
       <div class="form-row">
         <div class="form-group">
           <label>Categoria</label>
-          <select formControlName="categoriaId" (change)="mudarCategoria($event)">
+          <select formControlName="categoriaId">
             <option value="" disabled selected>Selecione...</option>
             @for (cat of categorias(); track cat.id) {
               <option [value]="cat.id">{{ cat.nome }}</option>
@@ -149,13 +178,13 @@
 
         <div class="form-group">
           <label>Subcategoria</label>
-          <input type="text" formControlName="nomeSubcategoria" placeholder="Ex: Uber, iFood, Luz...">
+          <input type="text" formControlName="nomeSubcategoria" placeholder="Ex: Conta de Luz, Uber...">
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
-          <label>Data de Vencimento</label>
+          <label>Primeiro Vencimento</label>
           <input type="date" formControlName="dataVencimento">
         </div>
 
@@ -163,10 +192,19 @@
           <label>Nº Parcelas</label>
           <input type="number" formControlName="qtdParcelas" min="1" placeholder="1">
         </div>
+
+        <div class="form-group">
+          <label>Frequência</label>
+          <select formControlName="frequencia">
+            <option value="MENSAL">Mensal</option>
+            <option value="QUINZENAL">Quinzenal</option>
+            <option value="SEMANAL">Semanal</option>
+          </select>
+        </div>
       </div>
 
       <div class="form-group">
-        <label>Status</label>
+        <label>Status Inicial</label>
         <select formControlName="status">
           <option value="PENDENTE">Pendente</option>
           <option value="PAGO">Pago</option>

@@ -1,20 +1,20 @@
 export type TipoTransacao = 'RECEITA' | 'DESPESA';
 export type StatusTransacao = 'PENDENTE' | 'PAGO';
+export type FrequenciaParcela = 'SEMANAL' | 'QUINZENAL' | 'MENSAL';
 
-// Chaves reais usadas para ordenação na tabela
 export type CampoOrdenacao = 'dataVencimento' | 'categoria' | 'status' | 'valor';
 export type DirecaoOrdenacao = 'asc' | 'desc';
 
 export interface TransacaoRequest {
   id?: number;
   descricao: string;
-  tipo: TipoTransacao;
-  subcategoriaId: number; 
-  dataVencimento: string; 
-  mesCompetencia: number; 
-  anoCompetencia: number; 
-  status: StatusTransacao;
   valor: number;
+  dataVencimento: string;
+  status: StatusTransacao;
+  categoriaId: number;
+  nomeSubcategoria: string;
+  qtdParcelas?: number;
+  frequencia?: FrequenciaParcela;
 }
 
 export interface TransacaoResponse {
@@ -28,7 +28,9 @@ export interface TransacaoResponse {
   anoCompetencia: number;
   status: StatusTransacao;
   valor: number;
-  parcelas?: any[];
+  parcelaAtual?: number; 
+  totalParcelas?: number;
+  grupoId?: string;
 }
 
 export interface FiltroTransacao {

@@ -32,4 +32,8 @@ export class TransacaoService {
   deletar(id: number): Observable<void> {
     return this.http.delete<void>(`${this.API_URL}/${id}`);
   }
+
+  listarPorGrupo(grupoId: string): Observable<TransacaoResponse[]> {
+    return this.http.get<TransacaoResponse[]>(`${this.API_URL}/grupo/${grupoId}`);
+  }
 }

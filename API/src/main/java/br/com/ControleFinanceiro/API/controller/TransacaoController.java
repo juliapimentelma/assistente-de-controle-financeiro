@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/transacoes")
 @RequiredArgsConstructor
@@ -20,8 +22,8 @@ public class TransacaoController {
     private final TransacaoService transacaoService;
 
     @PostMapping
-    public ResponseEntity<TransacaoResponse> criar(@RequestBody @Valid TransacaoRequest request) {
-        TransacaoResponse response = transacaoService.criar(request);
+    public ResponseEntity<List<TransacaoResponse>> criar(@RequestBody @Valid TransacaoRequest request) {
+        List<TransacaoResponse> response = transacaoService.criar(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -45,5 +47,11 @@ public class TransacaoController {
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         transacaoService.deletar(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/grupo/{grupoId}")
+    public ResponseEntity<List<TransacaoResponse>> listarPorGrupo(@PathVariable String grupoId) {
+        List<TransacaoResponse> response = transacaoService.listarPorGrupo(grupoId);
+        return ResponseEntity.ok(response);
     }
 }

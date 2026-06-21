@@ -1,5 +1,6 @@
 package br.com.ControleFinanceiro.API.dto.request;
 
+import br.com.ControleFinanceiro.API.entity.emuns.FrequenciaParcela;
 import br.com.ControleFinanceiro.API.entity.emuns.StatusTransacao;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
@@ -17,17 +18,16 @@ public record TransacaoRequest(
         @NotNull(message = "A data de vencimento é obrigatória")
         LocalDate dataVencimento,
 
-        @NotNull(message = "O mês de competência é obrigatório")
-        @Min(value = 3, message = "O mês deve ser entre 1 e 12")
-        @Max(value = 12, message = "O mês deve ser entre 1 e 12")
-        Integer mesCompetencia,
-
-        @NotNull(message = "O ano de competência é obrigatório")
-        Integer anoCompetencia,
-
         @NotNull(message = "O status da transação é obrigatório")
         StatusTransacao status,
 
-        @NotNull(message = "O ID da subcategoria é obrigatório")
-        Long subcategoriaId
+        @NotNull(message = "O ID da categoria é obrigatório")
+        Long categoriaId,
+
+        String nomeSubcategoria,
+
+        @Min(value = 1, message = "A quantidade de parcelas mínima é 1")
+        Integer qtdParcelas,
+
+        FrequenciaParcela frequencia
 ) {}

@@ -2,18 +2,13 @@ package br.com.ControleFinanceiro.API.service;
 
 import br.com.ControleFinanceiro.API.dto.request.TransacaoRequest;
 import br.com.ControleFinanceiro.API.dto.response.TransacaoResponse;
-import br.com.ControleFinanceiro.API.entity.Orcamento;
-import br.com.ControleFinanceiro.API.entity.Subcategoria;
-import br.com.ControleFinanceiro.API.entity.Transacao;
-import br.com.ControleFinanceiro.API.entity.Usuario;
+import br.com.ControleFinanceiro.API.entity.*;
+import br.com.ControleFinanceiro.API.entity.emuns.FrequenciaParcela;
 import br.com.ControleFinanceiro.API.entity.emuns.StatusTransacao;
 import br.com.ControleFinanceiro.API.entity.emuns.TipoCategoria;
 import br.com.ControleFinanceiro.API.exception.NegocioException;
 import br.com.ControleFinanceiro.API.mapper.TransacaoMapper;
-import br.com.ControleFinanceiro.API.repository.OrcamentoRepository;
-import br.com.ControleFinanceiro.API.repository.SubcategoriaRepository;
-import br.com.ControleFinanceiro.API.repository.TransacaoRepository;
-import br.com.ControleFinanceiro.API.repository.UsuarioRepository;
+import br.com.ControleFinanceiro.API.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,7 +19,10 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,40 +32,95 @@ public class TransacaoService {
     private final TransacaoRepository transacaoRepository;
     private final UsuarioRepository usuarioRepository;
     private final SubcategoriaRepository subcategoriaRepository;
+    private final CategoriaRepository categoriaRepository;
     private final OrcamentoRepository orcamentoRepository;
     private final TransacaoMapper transacaoMapper;
 
     @Transactional
-    public TransacaoResponse criar(TransacaoRequest dto) {
+    public List<TransacaoResponse> criar(TransacaoRequest dto) {
         Usuario usuario = getUsuarioLogado();
 
-        Subcategoria subcategoria = subcategoriaRepository.findById(dto.subcategoriaId())
-                .orElseThrow(() -> new EntityNotFoundException("Subcategoria não encontrada."));
+        Categoria categoria = categoriaRepository.findById(dto.categoriaId())
+                .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada."));
 
-        if (!subcategoria.getCategoria().getUsuario().getId().equals(usuario.getId())) {
-            throw new NegocioException("Esta subcategoria não pertence a você.");
+        if (!categoria.getUsuario().getId().equals(usuario.getId())) {
+            throw new NegocioException("Esta categoria não pertence a você.");
         }
 
-        Transacao transacao = Transacao.builder()
-                .descricao(dto.descricao())
-                .valor(dto.valor())
-                .dataCriacao(LocalDate.now())
-                .dataVencimento(dto.dataVencimento())
-                .mesCompetencia(dto.mesCompetencia())
-                .anoCompetencia(dto.anoCompetencia())
-                .status(dto.status())
-                .subcategoria(subcategoria)
-                .usuario(usuario)
-                .build();
+        Subcategoria subcategoria = null;
 
-        if (transacao.getStatus() == StatusTransacao.PAGO) {
-            processarPagamento(usuario, transacao);
+        if (dto.nomeSubcategoria() != null && !dto.nomeSubcategoria().trim().isEmpty()) {
+            subcategoria = subcategoriaRepository
+                    .findByNomeIgnoreCaseAndCategoriaId(dto.nomeSubcategoria().trim(), categoria.getId())
+                    .orElseGet(() -> {
+                        Subcategoria nova = new Subcategoria();
+                        nova.setNome(dto.nomeSubcategoria().trim());
+                        nova.setCategoria(categoria);
+                        return subcategoriaRepository.save(nova);
+                    });
         }
 
-        transacao = transacaoRepository.save(transacao);
+        int totalParcelas = (dto.qtdParcelas() != null && dto.qtdParcelas() > 0) ? dto.qtdParcelas() : 1;
+        FrequenciaParcela frequencia = dto.frequencia() != null ? dto.frequencia() : FrequenciaParcela.MENSAL;
+
+        BigDecimal valorParcela = dto.valor().divide(new BigDecimal(totalParcelas), 2, RoundingMode.HALF_UP);
+        LocalDate dataVencimentoBase = dto.dataVencimento();
+
+        String grupoId = java.util.UUID.randomUUID().toString();
+
+        List<Transacao> transacoesSalvas = new ArrayList<>();
+
+        for (int i = 1; i <= totalParcelas; i++) {
+
+            Transacao transacao = Transacao.builder()
+                    .descricao(dto.descricao())
+                    .valor(valorParcela)
+                    .dataCriacao(LocalDate.now())
+                    .dataVencimento(dataVencimentoBase)
+                    .mesCompetencia(dataVencimentoBase.getMonthValue())
+                    .anoCompetencia(dataVencimentoBase.getYear())
+                    .status(dto.status())
+                    .categoria(categoria)
+                    .subcategoria(subcategoria)
+                    .usuario(usuario)
+                    .parcelaAtual(i)
+                    .totalParcelas(totalParcelas)
+                    .grupoId(grupoId)
+                    .build();
+
+            if (transacao.getStatus() == StatusTransacao.PAGO) {
+                processarPagamento(usuario, transacao);
+            }
+
+            transacoesSalvas.add(transacaoRepository.save(transacao));
+
+            if (i < totalParcelas) {
+                dataVencimentoBase = calcularProximaData(dataVencimentoBase, frequencia);
+            }
+        }
+
         usuarioRepository.save(usuario);
 
-        return transacaoMapper.toResponseDTO(transacao);
+        return transacoesSalvas.stream()
+                .map(transacaoMapper::toResponseDTO)
+                .toList();
+    }
+
+    public List<TransacaoResponse> listarPorGrupo(String grupoId) {
+        Long usuarioId = getUsuarioLogadoId();
+
+        return transacaoRepository.findByUsuarioIdAndGrupoIdOrderByParcelaAtualAsc(usuarioId, grupoId)
+                .stream()
+                .map(transacaoMapper::toResponseDTO)
+                .toList();
+    }
+
+    private LocalDate calcularProximaData(LocalDate dataBase, FrequenciaParcela frequencia) {
+        return switch (frequencia) {
+            case SEMANAL -> dataBase.plusWeeks(1);
+            case QUINZENAL -> dataBase.plusDays(15);
+            case MENSAL -> dataBase.plusMonths(1);
+        };
     }
 
     public Page<TransacaoResponse> listarPorCompetencia(Integer mes, Integer ano, Pageable pageable) {

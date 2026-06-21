@@ -1,6 +1,6 @@
 import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TipoTransacao, StatusTransacao, TransacaoResponse, DirecaoOrdenacao, CampoOrdenacao } from '../../core/models/transacao.model';
+import { TipoTransacao, StatusTransacao, TransacaoResponse, DirecaoOrdenacao, CampoOrdenacao, TransacaoRequest } from '../../core/models/transacao.model';
 import { TransacaoService } from '../../core/services/transacao';
 import { Modal } from '../../shared/modal/modal';
 import { ExtratoService } from '../../core/services/extrato';
@@ -15,7 +15,6 @@ import { CategoriaResponse } from '../../core/models/categoria.model';
   templateUrl: './transacoes.html',
   styleUrl: './transacoes.css',
 })
-
 export class Transacoes implements OnInit {
 
   private readonly extratoService = inject(ExtratoService);
@@ -37,17 +36,6 @@ export class Transacoes implements OnInit {
 
   private readonly transacoesServidor = signal<TransacaoResponse[]>([]);
   readonly categorias = signal<CategoriaResponse[]>([]);
-
-  readonly categoriaSelecionadaId = signal<number | string | null>(null);
-  
-  readonly subcategoriasDisponiveis = computed(() => {
-    const idCat = this.categoriaSelecionadaId();
-    if (!idCat) return [];
-    
-    const cat = this.categorias().find(c => String(c.id) === String(idCat));
-
-    return cat?.subcategorias || [];
-  });
 
   ngOnInit(): void {
     this.carregarTransacoesDoMes();
@@ -125,22 +113,13 @@ export class Transacoes implements OnInit {
     descricao: ['', Validators.required],
     tipo: ['DESPESA', Validators.required],
     categoriaId: ['', Validators.required], 
-    nomeSubcategoria: ['', Validators.required],
+    nomeSubcategoria: [''],
     dataVencimento: ['', Validators.required],
     status: ['PENDENTE', Validators.required],
-    valorTexto: ['', Validators.required], 
-    qtdParcelas: [1, [Validators.required, Validators.min(1)]] 
+    valorTexto: ['', Validators.required],
+    qtdParcelas: [1, [Validators.required, Validators.min(1)]],
+    frequencia: ['MENSAL', Validators.required]
   });
-
-  mudarCategoria(evento: Event): void {
-    const selectElement = evento.target as HTMLSelectElement;
-    const idSelecionado = selectElement.value;
-    
-    this.categoriaSelecionadaId.set(idSelecionado);
-
-    this.transacaoForm.get('subcategoriaId')?.enable();
-    this.transacaoForm.get('subcategoriaId')?.setValue('');
-  }
 
   aplicarMascaraMoeda(evento: Event): void {
     const input = evento.target as HTMLInputElement;
@@ -163,7 +142,9 @@ export class Transacoes implements OnInit {
     this.transacaoEditando.set(transacao ?? null);
     
     if (transacao) {
-      const catEncontrada = this.categorias().find(c => c.nome === transacao.nomeCategoriaMaior);
+      const catEncontrada = this.categorias().find(c => 
+        c.nome.toLowerCase().trim() === transacao.nomeCategoriaMaior?.toLowerCase().trim()
+      );
       const catId = catEncontrada ? catEncontrada.id : '';
 
       const valorAjustado = transacao.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -173,14 +154,24 @@ export class Transacoes implements OnInit {
         descricao: transacao.descricao,
         tipo: transacao.tipo,
         categoriaId: catId,
-        nomeSubcategoria: transacao.nomeSubcategoria,
+        nomeSubcategoria: transacao.nomeSubcategoria || '',
         dataVencimento: transacao.dataVencimento,
         status: transacao.status,
         valorTexto: valorAjustado,
-        qtdParcelas: transacao.parcelas?.length || 1
+        qtdParcelas: transacao.totalParcelas || 1,
+        frequencia: 'MENSAL'
       });
+
+      console.log("Status do Form:", this.transacaoForm.status);
+      Object.keys(this.transacaoForm.controls).forEach(key => {
+        const control = this.transacaoForm.get(key);
+        if (control?.invalid) {
+          console.warn(`🚨 Campo bloqueando o botão: ${key}`, control.errors);
+        }
+      });
+
     } else {
-      this.transacaoForm.reset({ tipo: 'DESPESA', status: 'PENDENTE', qtdParcelas: 1 });
+      this.transacaoForm.reset({ tipo: 'DESPESA', status: 'PENDENTE', qtdParcelas: 1, frequencia: 'MENSAL', categoriaId: '' });
     }
     
     this.modalAberto.set(true);
@@ -190,15 +181,18 @@ export class Transacoes implements OnInit {
     if (this.transacaoForm.invalid) return;
     
     const formValues = this.transacaoForm.value;
-    const dataObj = new Date(formValues.dataVencimento);
-
     const valorConvertido = parseFloat(formValues.valorTexto.replace(/\./g, '').replace(',', '.'));
 
-    const request = {
-      ...formValues,
+    const request: TransacaoRequest = {
+      id: formValues.id,
+      descricao: formValues.descricao,
       valor: valorConvertido,
-      mesCompetencia: dataObj.getMonth() + 1,
-      anoCompetencia: dataObj.getFullYear()
+      dataVencimento: formValues.dataVencimento,
+      status: formValues.status,
+      categoriaId: Number(formValues.categoriaId),
+      nomeSubcategoria: formValues.nomeSubcategoria,
+      qtdParcelas: formValues.qtdParcelas,
+      frequencia: formValues.frequencia
     };
 
     this.transacaoService.criar(request).subscribe({
@@ -206,7 +200,17 @@ export class Transacoes implements OnInit {
         this.fecharModal();
         this.carregarTransacoesDoMes(); 
       },
-      error: (err) => console.error('Erro ao salvar', err)
+      error: (err) => {
+        // 🚨 O MODO DETETIVE ATACANDO NOVAMENTE
+        console.error('Erro 400: O Java recusou os dados!', err);
+        
+        // Se o Spring Boot mandou a lista de erros, vamos imprimir no console
+        if (err.error) {
+          console.log('Motivo exato da recusa do Java:', err.error);
+        }
+        
+        alert('Erro ao salvar. Aperte F12 e veja no Console qual campo o Java recusou!');
+      }
     });
   }
 
@@ -247,11 +251,44 @@ export class Transacoes implements OnInit {
     });
   }
 
-  readonly transacoesExpandidas = signal<Set<number>>(new Set());
+  readonly linhasExpandidas = signal<Set<number>>(new Set());
+  readonly parcelasCarregadas = signal<Record<string, TransacaoResponse[]>>({});
 
-  toggleExpandir(id: number): void {
-    const atuais = new Set(this.transacoesExpandidas());
-    if (atuais.has(id)) atuais.delete(id); else atuais.add(id);
-    this.transacoesExpandidas.set(atuais);
+  toggleExpandir(t: TransacaoResponse): void {
+    console.log('🔄 Toggler clicado para a transação:', t);
+    
+    if (!t.grupoId) {
+      console.error('❌ Erro: O campo grupoId está nulo ou indefinido no objeto recebido do Java!');
+      alert('Atenção: Esta transação não possui um grupoId gerado pelo servidor.');
+      return;
+    }
+
+    const atuais = new Set(this.linhasExpandidas());
+
+    if (atuais.has(t.id)) {
+      console.log('🔽 Fechando linhas do grupo ID:', t.id);
+      atuais.delete(t.id);
+      this.linhasExpandidas.set(atuais);
+      return;
+    }
+
+    console.log('🔼 Abrindo linhas para o ID:', t.id, 'A chamar Grupo:', t.grupoId);
+
+    if (!this.parcelasCarregadas()[t.grupoId]) {
+      console.log('🌐 A fazer requisição HTTP para buscar o grupo no banco...');
+      this.transacaoService.listarPorGrupo(t.grupoId).subscribe({
+        next: (parcelas) => {
+          console.log('✅ Parcelas devolvidas pelo Java:', parcelas);
+          this.parcelasCarregadas.update(prev => ({ ...prev, [t.grupoId!]: parcelas }));
+          atuais.add(t.id);
+          this.linhasExpandidas.set(atuais);
+        },
+        error: (err) => console.error('❌ Erro na requisição HTTP ao listar grupo:', err)
+      });
+    } else {
+       console.log('📦 Dados obtidos do cache local.');
+       atuais.add(t.id);
+       this.linhasExpandidas.set(atuais);
+    }
   }
 }

@@ -8,8 +8,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface TransacaoMapper {
 
+    @Mapping(source = "categoria.nome", target = "nomeCategoriaMaior")
+    @Mapping(source = "categoria.tipo", target = "tipo")
     @Mapping(source = "subcategoria.nome", target = "nomeSubcategoria")
-    @Mapping(source = "subcategoria.categoria.nome", target = "nomeCategoriaMaior")
-    @Mapping(source = "subcategoria.categoria.tipo", target = "tipo")
     TransacaoResponse toResponseDTO(Transacao transacao);
 }
