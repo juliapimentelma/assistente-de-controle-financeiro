@@ -37,7 +37,7 @@ export class AuthService {
   }
 
   cadastrar(dados: CadastroRequest): Observable<CadastroResponse> {
-    return this.http.post<CadastroResponse>(`${this.API_URL}/cadastro`, dados);
+    return this.http.post<CadastroResponse>(`${this.API_URL}/registrar`, dados);
   }
 
   logout(): void {

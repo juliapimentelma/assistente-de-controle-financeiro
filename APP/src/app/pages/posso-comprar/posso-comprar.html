@@ -32,27 +32,34 @@
     }
   </div>
 
-  <div class="chat-input-area">
+  <div class="chat-input-area frase-interativa">
+    
+    <span class="texto-fixo">Quero comprar</span>
+    
     <input 
       type="text" 
       [(ngModel)]="item" 
       (keyup.enter)="enviarPergunta()"
-      class="input-item"
+      class="input-linha"
+      placeholder="Ex: um tênis"
     >
     
-    <div class="input-grupo-valor">
-      <span class="moeda-prefixo font-tech">R$</span>
-      <input 
-        type="number" 
-        [(ngModel)]="valor" 
-        (keyup.enter)="enviarPergunta()"
-        class="input-valor"
-      >
-    </div>
+    <span class="texto-fixo">por R$</span>
+    
+    <input 
+      type="number" 
+      [(ngModel)]="valor" 
+      (keyup.enter)="enviarPergunta()"
+      class="input-linha-num"
+      placeholder="500"
+    >
+    
+    <span class="texto-fixo">. Posso comprar?</span>
     
     <button class="btn-enviar" (click)="enviarPergunta()" [disabled]="!item || !valor">
       <span class="material-symbols-rounded">send</span>
     </button>
+
   </div>
 
 </div>

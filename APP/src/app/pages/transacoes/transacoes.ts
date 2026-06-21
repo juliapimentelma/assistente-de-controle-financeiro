@@ -161,15 +161,6 @@ export class Transacoes implements OnInit {
         qtdParcelas: transacao.totalParcelas || 1,
         frequencia: 'MENSAL'
       });
-
-      console.log("Status do Form:", this.transacaoForm.status);
-      Object.keys(this.transacaoForm.controls).forEach(key => {
-        const control = this.transacaoForm.get(key);
-        if (control?.invalid) {
-          console.warn(`🚨 Campo bloqueando o botão: ${key}`, control.errors);
-        }
-      });
-
     } else {
       this.transacaoForm.reset({ tipo: 'DESPESA', status: 'PENDENTE', qtdParcelas: 1, frequencia: 'MENSAL', categoriaId: '' });
     }
@@ -200,17 +191,7 @@ export class Transacoes implements OnInit {
         this.fecharModal();
         this.carregarTransacoesDoMes(); 
       },
-      error: (err) => {
-        // 🚨 O MODO DETETIVE ATACANDO NOVAMENTE
-        console.error('Erro 400: O Java recusou os dados!', err);
-        
-        // Se o Spring Boot mandou a lista de erros, vamos imprimir no console
-        if (err.error) {
-          console.log('Motivo exato da recusa do Java:', err.error);
-        }
-        
-        alert('Erro ao salvar. Aperte F12 e veja no Console qual campo o Java recusou!');
-      }
+      error: (err) => console.error('Erro ao salvar transação', err)
     });
   }
 
@@ -223,14 +204,15 @@ export class Transacoes implements OnInit {
     if(confirm(`Tem certeza que deseja excluir a transação: ${transacao.descricao}?`)) {
       this.transacaoService.deletar(transacao.id).subscribe({
         next: () => this.carregarTransacoesDoMes(),
-        error: (err) => console.error('Erro ao excluir', err)
+        error: (err) => console.error('Erro ao excluir transação', err)
       });
     }
   }
 
   marcarComoPago(transacao: TransacaoResponse): void {
     this.transacaoService.marcarComoPago(transacao.id).subscribe({
-      next: () => this.carregarTransacoesDoMes()
+      next: () => this.carregarTransacoesDoMes(),
+      error: (err) => console.error('Erro ao marcar como pago', err)
     });
   }
 
@@ -247,7 +229,8 @@ export class Transacoes implements OnInit {
         link.download = `Meu_Extrato_${mes}_${ano}.pdf`; 
         link.click();
         window.URL.revokeObjectURL(url);
-      }
+      },
+      error: (err) => console.error('Erro ao exportar PDF', err)
     });
   }
 
@@ -255,38 +238,26 @@ export class Transacoes implements OnInit {
   readonly parcelasCarregadas = signal<Record<string, TransacaoResponse[]>>({});
 
   toggleExpandir(t: TransacaoResponse): void {
-    console.log('🔄 Toggler clicado para a transação:', t);
-    
-    if (!t.grupoId) {
-      console.error('❌ Erro: O campo grupoId está nulo ou indefinido no objeto recebido do Java!');
-      alert('Atenção: Esta transação não possui um grupoId gerado pelo servidor.');
-      return;
-    }
+    if (!t.grupoId || (t.totalParcelas && t.totalParcelas <= 1)) return;
 
     const atuais = new Set(this.linhasExpandidas());
 
     if (atuais.has(t.id)) {
-      console.log('🔽 Fechando linhas do grupo ID:', t.id);
       atuais.delete(t.id);
       this.linhasExpandidas.set(atuais);
       return;
     }
 
-    console.log('🔼 Abrindo linhas para o ID:', t.id, 'A chamar Grupo:', t.grupoId);
-
     if (!this.parcelasCarregadas()[t.grupoId]) {
-      console.log('🌐 A fazer requisição HTTP para buscar o grupo no banco...');
       this.transacaoService.listarPorGrupo(t.grupoId).subscribe({
         next: (parcelas) => {
-          console.log('✅ Parcelas devolvidas pelo Java:', parcelas);
           this.parcelasCarregadas.update(prev => ({ ...prev, [t.grupoId!]: parcelas }));
           atuais.add(t.id);
           this.linhasExpandidas.set(atuais);
         },
-        error: (err) => console.error('❌ Erro na requisição HTTP ao listar grupo:', err)
+        error: (err) => console.error('Erro ao buscar parcelas do grupo', err)
       });
     } else {
-       console.log('📦 Dados obtidos do cache local.');
        atuais.add(t.id);
        this.linhasExpandidas.set(atuais);
     }
