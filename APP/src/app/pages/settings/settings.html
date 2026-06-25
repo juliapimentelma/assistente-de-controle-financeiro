@@ -1,0 +1,113 @@
+<div class="settings-container">
+  <div class="settings-header">
+    <h1 class="font-tech">Configurações</h1>
+    <span>Gerencie seu perfil e segurança</span>
+  </div>
+
+  @if (mensagemAviso()) {
+    <div class="alerta" [ngClass]="mensagemAviso()?.tipo">
+      <span class="material-symbols-rounded">
+        {{ mensagemAviso()?.tipo === 'sucesso' ? 'check_circle' : 'error' }}
+      </span>
+      {{ mensagemAviso()?.texto }}
+    </div>
+  }
+
+  <div class="settings-grid">
+    
+    <div class="settings-card">
+      <div class="card-header">
+        <span class="material-symbols-rounded">person</span>
+        <h2>Perfil e Preferências</h2>
+      </div>
+
+      <form [formGroup]="perfilForm" (ngSubmit)="salvarPerfil()" class="form-container">
+        <div class="form-group">
+          <label>E-mail de Login (Fixo)</label>
+          <input type="email" formControlName="email" class="input-readonly">
+        </div>
+
+        <div class="form-group">
+          <label>Nome de Exibição</label>
+          <input type="text" formControlName="nome" placeholder="Como devemos chamar você?">
+        </div>
+
+        <div class="form-group">
+          <label>Personalidade do Assistente (IA)</label>
+          <div class="radio-group">
+            <label class="radio-card">
+              <input type="radio" formControlName="tomIA" value="CONSELHEIRO">
+              <div class="radio-content">
+                <span class="material-symbols-rounded">volunteer_activism</span>
+                <div>
+                  <strong>Conselheiro</strong>
+                  <p>Gentil, focado em educação financeira e dicas.</p>
+                </div>
+              </div>
+            </label>
+
+            <label class="radio-card">
+              <input type="radio" formControlName="tomIA" value="SARGENTO">
+              <div class="radio-content">
+                <span class="material-symbols-rounded">military_tech</span>
+                <div>
+                  <strong>Sargento</strong>
+                  <p>Linha dura, direto ao ponto. Sem desculpas.</p>
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-salvar" [disabled]="perfilForm.invalid || perfilForm.pristine">
+          Salvar Perfil
+        </button>
+      </form>
+    </div>
+
+    <div class="settings-card">
+      <div class="card-header">
+        <span class="material-symbols-rounded">lock</span>
+        <h2>Segurança</h2>
+      </div>
+
+      <form [formGroup]="senhaForm" (ngSubmit)="salvarSenha()" class="form-container">
+        <div class="form-group">
+          <label>Senha Atual</label>
+          <input type="password" formControlName="senhaAtual" placeholder="Digite sua senha atual">
+        </div>
+
+        <div class="form-group">
+          <label>Nova Senha</label>
+          <input type="password" formControlName="novaSenha" placeholder="Mínimo 6 caracteres">
+        </div>
+
+        <div class="form-group">
+          <label>Confirmar Nova Senha</label>
+          <input type="password" formControlName="confirmarSenha" placeholder="Repita a nova senha">
+          @if (senhaForm.hasError('senhasDiferentes') && senhaForm.get('confirmarSenha')?.touched) {
+            <span class="erro-texto">As senhas não coincidem.</span>
+          }
+        </div>
+
+        <button type="submit" class="btn-salvar" [disabled]="senhaForm.invalid">
+          Atualizar Senha
+        </button>
+      </form>
+    </div>
+
+    <div class="settings-card danger-zone">
+      <div class="card-header text-danger">
+        <span class="material-symbols-rounded">warning</span>
+        <h2>Zona de Perigo</h2>
+      </div>
+      <p class="danger-desc">
+        Desativar sua conta ocultará todos os seus dados e removerá o seu acesso imediatamente. Esta ação não apaga registros por segurança contábil, mas bloqueia o login.
+      </p>
+      <button class="btn-danger" (click)="desativarConta()">
+        Desativar Minha Conta
+      </button>
+    </div>
+
+  </div>
+</div>

@@ -8,6 +8,7 @@ import { Metas } from './pages/metas/metas';
 import { Transacoes } from './pages/transacoes/transacoes';
 import { Orcamentos } from './pages/orcamentos/orcamentos';
 import { PossoComprar } from './pages/posso-comprar/posso-comprar';
+import { Settings } from './pages/settings/settings';
 
 export const routes: Routes = [
   { 
@@ -33,6 +34,7 @@ export const routes: Routes = [
       },
       { path: 'orcamentos', component: Orcamentos },
       {path: 'posso-comprar', title: 'Posso Comprar? - Conselheiro IA', component: PossoComprar},
+      { path: 'settings', title: 'Configurações', component: Settings },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },

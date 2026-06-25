@@ -14,7 +14,9 @@ export interface AtualizarPerfilRequest {
   modoEscuro?: boolean;
 }
 
-export interface AtualizarSenhaRequest {
+export interface AtualizarCredenciaisRequest {
+  emailAtual: string;
   senhaAtual: string;
-  novaSenha: string;
+  novoEmail?: string;
+  novaSenha?: string;
 }

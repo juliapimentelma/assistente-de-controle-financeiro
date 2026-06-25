@@ -1,0 +1,250 @@
+:host {
+  display: block;
+  padding: 2rem;
+  box-sizing: border-box;
+  font-family: var(--font-principal);
+  color: var(--texto-primario);
+}
+
+.settings-container {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.settings-header h1 {
+  margin: 0;
+  font-size: 2.2rem;
+  font-weight: 400;
+}
+
+.settings-header span {
+  font-size: 1.1rem;
+  color: var(--texto-secundario);
+}
+
+.alerta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  animation: slideDown 0.3s ease-out;
+}
+
+.alerta.sucesso {
+  background-color: rgba(209, 226, 10, 0.1);
+  color: var(--amarelo-base);
+  border: 1px solid rgba(209, 226, 10, 0.2);
+}
+
+.alerta.erro {
+  background-color: rgba(255, 76, 76, 0.1);
+  color: var(--vermelho-despesa);
+  border: 1px solid rgba(255, 76, 76, 0.2);
+}
+
+.settings-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.settings-card {
+  background-color: var(--bg-card);
+  border-radius: 15px;
+  padding: 2rem;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 1rem;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+
+.card-header .material-symbols-rounded {
+  color: var(--roxo-principal);
+  font-size: 1.8rem;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--texto-secundario);
+}
+
+input {
+  background-color: var(--bg-principal);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 14px;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--texto-primario);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+input:focus {
+  border-color: var(--roxo-principal);
+}
+
+.input-readonly {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.erro-texto {
+  color: #ff4c4c;
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+.radio-group {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.radio-card {
+  flex: 1;
+  position: relative;
+  cursor: pointer;
+}
+
+.radio-card input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.radio-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem;
+  background-color: var(--bg-principal);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  transition: all 0.2s;
+}
+
+.radio-content .material-symbols-rounded {
+  font-size: 2rem;
+  color: var(--texto-secundario);
+}
+
+.radio-content strong {
+  display: block;
+  font-size: 1.1rem;
+  margin-bottom: 4px;
+  color: var(--texto-primario);
+}
+
+.radio-content p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--texto-secundario);
+  line-height: 1.4;
+}
+
+.radio-card input:checked ~ .radio-content {
+  border-color: var(--amarelo-base);
+  background-color: rgba(209, 226, 10, 0.05);
+}
+
+.radio-card input:checked ~ .radio-content .material-symbols-rounded {
+  color: var(--amarelo-base);
+}
+
+.btn-salvar {
+  align-self: flex-end;
+  background-color: var(--roxo-principal);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 14px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, opacity 0.2s;
+  margin-top: 1rem;
+}
+
+.btn-salvar:hover:not(:disabled) {
+  transform: scale(1.03);
+}
+
+.btn-salvar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Danger Zone */
+.danger-zone {
+  border: 1px solid rgba(255, 76, 76, 0.2);
+}
+
+.card-header.text-danger .material-symbols-rounded, 
+.card-header.text-danger h2 {
+  color: #ff4c4c;
+}
+
+.danger-desc {
+  color: var(--texto-secundario);
+  line-height: 1.5;
+  margin-top: 0;
+  margin-bottom: 2rem;
+}
+
+.btn-danger {
+  background-color: transparent;
+  color: #ff4c4c;
+  border: 2px solid #ff4c4c;
+  border-radius: 10px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-danger:hover {
+  background-color: #ff4c4c;
+  color: #fff;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  :host { padding: 1rem; }
+  .radio-group { flex-direction: column; }
+  .btn-salvar { width: 100%; }
+}

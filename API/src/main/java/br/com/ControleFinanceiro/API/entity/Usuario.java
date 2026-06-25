@@ -53,4 +53,7 @@ public class Usuario {
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MetaProjeto> metas = new ArrayList<>();
+
+    @Column(name = "ativo")
+    private Boolean ativo = true;
 }
